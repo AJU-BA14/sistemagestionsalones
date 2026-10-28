@@ -1,0 +1,2945 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Sistema Institucional de Gestión de Espacios V8.0</title>
+  <style>
+    :root {
+      --navy: #0f172a;
+      --navy-light: #1e293b;
+      --primary: #1e3a8a;
+      --primary-hover: #172554;
+      --accent: #0284c7;
+      --success: #059669;
+      --success-bg: #ecfdf5;
+      --warning: #d97706;
+      --warning-bg: #fffbeb;
+      --danger: #dc2626;
+      --danger-bg: #fef2f2;
+      --slate: #64748b;
+      --border: #cbd5e1;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #0f172a;
+    }
+    * { box-sizing: border-box; font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
+    html, body {
+      margin: 0; padding: 0; background: var(--bg); color: var(--text);
+      min-height: 100vh; display: flex; flex-direction: column;
+      overflow-x: hidden; overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
+    .hidden { display: none !important; }
+
+     
+    .main-wrap { width: 100%; max-width: 1060px; margin: 20px auto 30px auto; padding: 0 16px; flex: 1; }
+    .topbar-corp {
+      background: var(--navy); color: #ffffff; padding: 18px 24px; border-radius: 10px;
+      margin-bottom: 18px; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+      border-bottom: 3px solid var(--accent);
+    }
+    .topbar-corp h1 { margin: 0; font-size: 19px; font-weight: 700; letter-spacing: -0.3px; }
+    .topbar-corp p { margin: 4px 0 0 0; font-size: 13px; color: #cbd5e1; }
+
+    .card {
+      background: var(--card); border-radius: 10px; padding: 20px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06); margin-bottom: 16px;
+      border: 1px solid #e2e8f0;
+    }
+    .section-header {
+      margin: 0 0 16px 0; font-size: 14px; color: var(--navy); text-transform: uppercase;
+      letter-spacing: 0.4px; display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 8px; font-weight: 700; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
+    @media (max-width: 768px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+    label { display: block; font-weight: 600; font-size: 12.5px; margin-bottom: 5px; color: #334155; }
+    input, select, textarea {
+      width: 100%; padding: 9px 12px; border: 1px solid var(--border);
+      border-radius: 6px; font-size: 13.5px; margin-bottom: 12px; background: #fff; color: var(--text);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.12);
+    }
+
+     
+    .search-box { position: relative; }
+    .dropdown-menu {
+      position: absolute; top: 64px; left: 0; right: 0; background: white;
+      border: 1px solid var(--border); border-radius: 6px; max-height: 220px;
+      overflow-y: auto; z-index: 95; display: none; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+    }
+    .dropdown-item { padding: 10px 14px; cursor: pointer; font-size: 13.5px; border-bottom: 1px solid #f1f5f9; }
+    .dropdown-item:hover { background: #f1f5f9; color: var(--primary); font-weight: 600; }
+    .cat-tag { font-size: 11px; color: #475569; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; float: right; }
+
+     
+    .status-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-top: 4px; }
+    .badge {
+      display: inline-block; padding: 4px 9px; border-radius: 4px; font-size: 11.5px;
+      font-weight: 700; letter-spacing: 0.2px; margin: 2px;
+    }
+    .badge-success { background: var(--success-bg); color: var(--success); border: 1px solid #a7f3d0; }
+    .badge-warning { background: var(--warning-bg); color: var(--warning); border: 1px solid #fde68a; }
+    .badge-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid #fecaca; }
+    .badge-neutral { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+
+     
+    .btn {
+      padding: 8px 14px; border: 1px solid transparent; border-radius: 6px; font-size: 13px;
+      font-weight: 600; cursor: pointer; transition: 0.15s; display: inline-flex;
+      align-items: center; justify-content: center; gap: 6px; text-decoration: none;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary { background: var(--primary); color: white; width: 100%; font-size: 14.5px; padding: 12px; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-navy { background: var(--navy); color: white; }
+    .btn-navy:hover { background: var(--navy-light); }
+    .btn-success { background: var(--success); color: white; }
+    .btn-warning { background: var(--warning); color: white; }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-outline { background: #ffffff; color: #334155; border-color: var(--border); }
+    .btn-outline:hover { background: #f8fafc; border-color: #94a3b8; }
+    .btn-sm { padding: 5px 10px; font-size: 12px; }
+
+     
+    .admin-nav {
+      display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; background: white;
+      padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0;
+    }
+    .admin-nav button {
+      background: transparent; color: #475569; border: none; padding: 8px 13px;
+      border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 12.5px; transition: 0.15s;
+    }
+    .admin-nav button:hover { background: #f1f5f9; color: var(--navy); }
+    .admin-nav button.active { background: var(--navy); color: white; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 11px 10px; border-bottom: 1px solid #e2e8f0; text-align: left; vertical-align: middle; }
+    th { background: #f8fafc; font-weight: 700; color: #334155; font-size: 12px; text-transform: uppercase; letter-spacing: 0.3px; }
+    tr:hover td { background: #fcfcfd; }
+
+     
+    .cal-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    .cal-day-name { text-align: center; font-weight: 700; font-size: 11.5px; color: #475569; padding: 6px 0; background: #f1f5f9; border-radius: 4px; text-transform: uppercase; }
+    .cal-cell {
+      min-height: 88px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;
+      padding: 6px; cursor: pointer; transition: 0.15s; display: flex; flex-direction: column;
+    }
+    .cal-cell:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08); }
+    .cal-cell.empty { background: #f8fafc; cursor: default; border-color: transparent; }
+    .cal-cell.today { border: 2px solid var(--primary); background: #f8fafc; }
+    .cal-num { font-weight: 700; font-size: 12.5px; color: #1e293b; margin-bottom: 4px; display: flex; justify-content: space-between; }
+    .cal-badge {
+      font-size: 10px; font-weight: 600; padding: 2px 5px; border-radius: 3px;
+      margin-bottom: 3px; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cal-more { font-size: 10px; font-weight: 700; color: var(--primary); text-align: center; background: #e0e7ff; border-radius: 3px; padding: 2px; }
+    @media (max-width: 680px) {
+      .cal-cell { min-height: 64px; padding: 4px; }
+      .cal-badge { font-size: 9px; padding: 2px 3px; }
+    }
+
+     
+    .kiosco-screen { min-height: 100vh; padding: 16px; display: flex; flex-direction: column; gap: 14px; background: #0f172a; color: white; }
+    .kiosco-topbar {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+      background: #1e293b; padding: 12px 18px; border-radius: 10px; border: 1px solid #334155;
+    }
+    .kiosco-hero { border-radius: 12px; padding: 32px 24px; color: white; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+    .bg-disponible { background: linear-gradient(135deg, #065f46, #047857); border: 1px solid #10b981; }
+    .bg-ocupado { background: linear-gradient(135deg, #991b1b, #7f1d1d); border: 1px solid #f87171; }
+    .bg-mantenimiento { background: linear-gradient(135deg, #92400e, #78350f); border: 1px solid #fbbf24; }
+    .kiosco-clock { font-size: 20px; font-weight: 700; font-family: 'Courier New', monospace; background: #0f172a; color: #38bdf8; padding: 6px 14px; border-radius: 6px; border: 1px solid #334155; }
+    .btn-launch { background: #ffffff; color: #0f172a; padding: 11px 16px; border-radius: 6px; font-size: 13.5px; font-weight: 700; margin: 5px; border: none; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    .alerta-tiempo-kiosco {
+      background: #fffbeb; color: #92400e; border: 2px solid #f59e0b; padding: 12px 18px;
+      border-radius: 8px; font-size: 15px; font-weight: 700; max-width: 680px; margin: 14px auto 0 auto;
+    }
+
+     
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.72); z-index: 9000; display: none; align-items: center; justify-content: center; padding: 14px; }
+    .modal-card { background: white; width: 100%; max-width: 820px; border-radius: 10px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 35px rgba(0,0,0,0.25); color: var(--text); }
+    .modal-header { background: var(--navy); color: white; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
+    .folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; margin-bottom: 14px; }
+    .folder-item, .file-item {
+      border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px; cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 13px; font-weight: 600; background: #fff;
+    }
+    .folder-item:hover, .file-item:hover { background: #f1f5f9; border-color: var(--primary); }
+
+     
+    .modal-visor { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.98); z-index: 9999; display: none; flex-direction: column; }
+    .modal-bar { background: #0f172a; color: white; padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; border-bottom: 1px solid #334155; }
+    .visor-scroll-wrap {
+      flex: 1; width: 100%; overflow: auto !important; position: relative;
+      background: #1e293b; -webkit-overflow-scrolling: touch;
+      touch-action: pan-x pan-y pinch-zoom;
+    }
+    .visor-canvas { width: 100%; height: 100%; position: relative; transform-origin: 0 0; transition: width 0.15s, height 0.15s; }
+    .modal-frame { width: 100%; height: 100%; border: none; background: white; display: block; }
+    .pan-shield { position: absolute; inset: 0; z-index: 50; display: none; background: rgba(2, 132, 199, 0.05); cursor: grab; touch-action: none; }
+    .pan-shield.active { display: block; }
+
+     
+    .corp-footer {
+      background: #ffffff; border-top: 1px solid #e2e8f0; color: #64748b;
+      padding: 14px 20px; text-align: center; font-size: 12px; margin-top: auto;
+    }
+    .corp-footer strong { color: #334155; }
+  </style>
+</head>
+<body>
+
+  
+  <div id="vistaAccionCorreo" class="main-wrap hidden">
+    <div class="card" style="max-width:520px; margin:60px auto; text-align:center; padding:30px;">
+      <h2 id="tituloAccionCorreo" style="color:var(--navy); margin-top:0;">Procesando solicitud...</h2>
+      <p id="mensajeAccionCorreo" style="font-size:14.5px; color:#334155; line-height:1.6;">Verificando token de seguridad con el servidor central...</p>
+      <div id="areaMotivoRechazoCorreo" class="hidden" style="margin-top:16px; text-align:left;">
+        <label>Indique el motivo del rechazo (se notificará al solicitante):</label>
+        <textarea id="txtMotivoRechazoCorreo" rows="3" placeholder="Ej. El salón será ocupado por una sesión institucional prioritaria..."></textarea>
+        <button class="btn btn-danger" style="width:100%; padding:11px;" onclick="confirmarRechazoDesdeVistaCorreo()">Confirmar Rechazo de Solicitud</button>
+      </div>
+      <div style="margin-top:22px;">
+        <button class="btn btn-outline" onclick="volverAlFormularioDesdeCorreo()">Ir al Portal de Reservas</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <div id="vistaReserva" class="main-wrap hidden">
+    <div class="topbar-corp">
+      <div>
+        <h1>Sistema Institucional de Reserva de Salones</h1>
+        <p>Complete el formulario para verificar disponibilidad y registrar su solicitud de espacio</p>
+      </div>
+      <button type="button" class="btn btn-outline" style="background:#1e293b; color:#fff; border-color:#475569;" onclick="abrirCalendarioPublicoModal()">
+        Consultar Calendario Mensual
+      </button>
+    </div>
+
+    <div id="alertaModoReprogramar" class="card hidden" style="border-left: 4px solid var(--warning); background: var(--warning-bg);">
+      <strong>Modo de Reprogramación Activo:</strong> Está asignando un nuevo horario para la solicitud <b id="lblIdReprogramar"></b>. Seleccione la nueva fecha u horario disponible y confirme el envío.
+    </div>
+
+    
+    <div class="card">
+      <div class="section-header"><span>1. Selección de Espacio y Unidad Solicitante</span></div>
+      <div class="grid-2">
+        <div>
+          <label>Salón Requerido *</label>
+          <select id="salonSelect" onchange="consultarHorariosFecha()"></select>
+        </div>
+        <div class="search-box">
+          <label>Programa o Departamento * (Escriba para filtrar)</label>
+          <input type="text" id="buscadorDepto" placeholder="Buscar programa o unidad administrativa..." autocomplete="off"
+                 onfocus="abrirDesplegableDeptos()" oninput="filtrarDesplegableDeptos()">
+          <div id="listaDeptos" class="dropdown-menu"></div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="card">
+      <div class="section-header">
+        <span>2. Fecha, Horario y Verificación de Disponibilidad</span>
+        <button type="button" class="btn btn-outline btn-sm" onclick="abrirCalendarioPublicoModal()">
+          Ver Ocupación del Mes
+        </button>
+      </div>
+      <div class="grid-3">
+        <div>
+          <label>Fecha de Uso *</label>
+          <input type="date" id="fechaUso" onchange="consultarHorariosFecha()">
+        </div>
+        <div>
+          <label>Hora de Inicio *</label>
+          <input type="time" id="horaInicio">
+        </div>
+        <div>
+          <label>Hora de Finalización *</label>
+          <input type="time" id="horaFin">
+        </div>
+      </div>
+
+      <div class="status-box">
+        <div style="font-size:12px; font-weight:700; color:#475569; margin-bottom:6px;">
+          Estado de ocupación en la fecha seleccionada <span id="lblColchon"></span>:
+        </div>
+        <div id="visorOcupacion">Verificando disponibilidad...</div>
+        <div id="visorSugerencias" style="font-size:12px; color:var(--success); margin-top:6px; font-weight:600;"></div>
+      </div>
+    </div>
+
+    
+    <div class="card">
+      <div class="section-header"><span>3. Datos del Responsable y Actividad</span></div>
+      <div class="grid-2">
+        <div>
+          <label>Nombre Completo del Solicitante *</label>
+          <input type="text" id="nombreSolicitante" placeholder="Nombre y Apellido">
+        </div>
+        <div>
+          <label>Correo Electrónico Institucional *</label>
+          <input type="email" id="correoSolicitante" placeholder="Correo electrónico" autocomplete="off">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label>Motivo o Nombre de la Actividad *</label>
+          <input type="text" id="motivoReunion" placeholder="Ej. Sesión técnica mensual de coordinación">
+        </div>
+        <div>
+          <label>Número Estimado de Asistentes *</label>
+          <input type="number" id="cantidadPersonas" min="1" max="300" placeholder="Ej. 15">
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="card">
+      <div class="section-header"><span>4. Requerimientos de Mobiliario, Equipo y Material de Proyección</span></div>
+      <div class="grid-2">
+        <div>
+          <label>Requerimiento de Mobiliario (Opcional)</label>
+          <textarea id="mobiliario" rows="2" placeholder="Indique cantidad de mesas, sillas o disposición requerida..."></textarea>
+        </div>
+        <div>
+          <label>Requerimiento de Equipo Técnico (Opcional)</label>
+          <textarea id="equipoTecnico" rows="2" placeholder="Indique si requiere pantalla, audio, micrófono o conectores..."></textarea>
+        </div>
+      </div>
+
+      <div style="background:#f8fafc; border:1px solid #cbd5e1; padding:14px; border-radius:8px; margin-top:4px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+          <div>
+            <strong style="color:var(--navy); font-size:13.5px;">Archivos del Repositorio Compartido (Opcional)</strong>
+            <div style="font-size:12px; color:#64748b;">Puede pre-vincular presentaciones desde Drive o abrirlas directamente en la Tablet del salón.</div>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm" onclick="abrirExploradorDrive('SELECCIONAR')">Explorar Carpeta Compartida</button>
+        </div>
+        <div id="listaArchivosSeleccionados" style="margin-bottom:10px; font-size:13px;"></div>
+
+        <label style="color:var(--navy);">Enlaces Externos o Videos de Apoyo (Opcional):</label>
+        <div id="contenedorEnlaces">
+          <div style="display:flex; gap:8px; margin-bottom:6px;">
+            <input type="text" class="enlace-titulo" placeholder="Título del recurso" style="width:38%; margin:0;">
+            <input type="url" class="enlace-url" placeholder="https://..." style="width:62%; margin:0;">
+          </div>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm" style="margin-top:4px;" onclick="agregarFilaEnlace()">+ Añadir otro enlace</button>
+      </div>
+
+      <button id="btnEnviarReserva" class="btn btn-primary" style="margin-top:18px;" onclick="enviarFormularioReserva()">
+        Registrar Solicitud de Reserva
+      </button>
+    </div>
+
+    
+    <div class="card" style="background: #f8fafc;">
+      <div class="section-header">
+        <span>Asistencia Técnica y Soporte de Salones</span>
+        <button type="button" class="btn btn-navy btn-sm" onclick="abrirModalReporteSoporte()">Enviar Solicitud de Soporte</button>
+      </div>
+      <div id="contenedorContactosSoporte" style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; font-size:13px;">
+        Cargando canales de atención...
+      </div>
+    </div>
+
+    <div style="text-align:right; margin-top:8px;">
+      <a href="javascript:void(0)" onclick="activarVista('ADMIN')" style="font-size:12px; color:#64748b; text-decoration:none; font-weight:600;">
+        Acceso Administrativo
+      </a>
+    </div>
+  </div>
+
+  
+  <div id="vistaKiosco" class="kiosco-screen hidden">
+    <div class="kiosco-topbar">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="font-size:19px; font-weight:800; letter-spacing:0.3px;" id="kioscoTituloSalon">Salón</span>
+        <select id="kioscoSelectorSalon" onchange="actualizarKiosco()" style="width:220px; margin:0; background:#0f172a; color:#fff; border-color:#475569;"></select>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <span id="relojDigital" class="kiosco-clock">00:00:00</span>
+        <button class="btn btn-outline btn-sm" style="background:#0f172a; color:#fff; border-color:#475569;" onclick="actualizarKiosco()">Sincronizar Ahora</button>
+        <button class="btn btn-outline btn-sm" style="background:#0f172a; color:#fff; border-color:#475569;" onclick="togglePantallaCompleta()">Pantalla Completa</button>
+      </div>
+    </div>
+
+    <div id="kioscoHero" class="kiosco-hero bg-disponible">
+      <div id="kioscoBadgeEstado" style="font-size:34px; font-weight:800; letter-spacing:0.5px;">SALÓN DISPONIBLE</div>
+      <div id="kioscoInfoEvento" style="font-size:18px; margin-top:10px; line-height:1.5; opacity:0.95;"></div>
+
+      <div id="kioscoAlertaTiempo" class="alerta-tiempo-kiosco hidden"></div>
+      <div id="kioscoBotonesMaterial" style="margin-top:22px;"></div>
+
+      <div id="kioscoCajaFinalizar" class="hidden" style="margin-top:24px; display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+        <button class="btn btn-warning" style="padding:11px 20px; font-size:14px; font-weight:700;" onclick="abrirModalExtensionKiosco()">
+          Solicitar Extensión de Tiempo (+5, +10, +15, +30 min)
+        </button>
+        <button class="btn btn-navy" style="padding:11px 20px; font-size:13.5px; border:1px solid #475569;" onclick="liberarSalonKiosco()">
+          Finalizar Sesión y Liberar Salón
+        </button>
+      </div>
+    </div>
+
+    <div class="card" style="background:#1e293b; border-color:#334155; color:#f8fafc;">
+      <div class="section-header" style="color:#cbd5e1; border-bottom-color:#334155;"><span>Próximas Sesiones Programadas para Hoy</span></div>
+      <div id="kioscoListaProximas" style="font-size:13.5px; color:#cbd5e1;">Consultando programación del día...</div>
+    </div>
+  </div>
+
+  
+  <div id="vistaLogistica" class="main-wrap hidden" style="max-width:1020px;">
+    <div id="cardLoginLogistica" class="card" style="max-width:420px; margin:55px auto; padding:32px; text-align:center; border-top:4px solid var(--accent);">
+      <div style="width:48px; height:48px; background:#f1f5f9; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 14px auto; color:var(--navy); font-weight:800; font-size:16px; border:1px solid #cbd5e1;">
+        LOG
+      </div>
+      <h2 style="margin:0 0 6px 0; font-size:19px; color:var(--navy);">Acceso Personal de Mobiliario</h2>
+      <p style="font-size:13px; color:#64748b; margin-bottom:20px;">Ingrese su código PIN de autorización para consultar las órdenes de montaje</p>
+      <input type="password" id="pinLogisticaInput" placeholder="••••" style="text-align:center; font-size:22px; letter-spacing:8px; font-weight:700;"
+             onkeydown="if(event.key==='Enter') loginLogistica()">
+      <button class="btn btn-primary" onclick="loginLogistica()">Acceder al Panel de Montaje</button>
+    </div>
+
+    <div id="dashboardLogistica" class="hidden">
+      <div class="topbar-corp">
+        <div>
+          <h1>Módulo Operativo de Mobiliario y Equipamiento</h1>
+          <p>Encargado activo: <b id="lblNombreLogistica" style="color:#fff;"></b></p>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-outline btn-sm" style="background:#1e293b; color:#fff; border-color:#475569;" onclick="cargarVistaLogistica()">Actualizar Agenda</button>
+          <button class="btn btn-outline btn-sm hidden" id="btnVolverAdminDesdeLog" style="background:#1e293b; color:#fff; border-color:#475569;" onclick="activarVista('ADMIN')">Ir a Administración</button>
+          <button class="btn btn-warning btn-sm" onclick="cerrarSesionLogistica()">Cerrar Sesión</button>
+        </div>
+      </div>
+
+      <div id="notaAdminEnLogistica" class="card" style="border-left:4px solid var(--accent); background:#f8fafc; font-size:13.5px;"></div>
+
+      <div class="card">
+        <div class="section-header">
+          <span>Órdenes de Montaje de Salones</span>
+          <select id="filtroLogisticaVista" onchange="renderizarListaLogisticaOperativa()" style="width:230px; margin:0;">
+            <option value="PENDIENTES">Pendientes de Instalación</option>
+            <option value="TODAS">Todas las Sesiones Aprobadas</option>
+          </select>
+        </div>
+        <div id="contenedorTarjetasLogistica">Cargando órdenes de trabajo...</div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div id="vistaAdmin" class="main-wrap hidden" style="max-width:1180px;">
+    <div id="cardLoginAdmin" class="card" style="max-width:420px; margin:55px auto; padding:32px; text-align:center; border-top:4px solid var(--navy);">
+      <div style="width:48px; height:48px; background:#f1f5f9; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 14px auto; color:var(--navy); font-weight:800; font-size:18px; border:1px solid #cbd5e1;">
+        ID
+      </div>
+      <h2 style="margin:0 0 6px 0; font-size:19px; color:var(--navy);">Portal de Administración</h2>
+      <p style="font-size:13px; color:#64748b; margin-bottom:20px;">Ingrese su código PIN de autorización para acceder al centro de control</p>
+      <input type="password" id="pinAdminInput" placeholder="••••" style="text-align:center; font-size:22px; letter-spacing:8px; font-weight:700;"
+             onkeydown="if(event.key==='Enter') loginAdmin()">
+      <button class="btn btn-primary" onclick="loginAdmin()">Iniciar Sesión Segura</button>
+      <div style="margin-top:16px; padding-top:12px; border-top:1px solid #f1f5f9;">
+        <a href="javascript:void(0)" onclick="activarVista('RESERVA')" style="font-size:12.5px; color:#64748b; text-decoration:none;">← Volver al Portal de Reservas</a>
+      </div>
+    </div>
+
+    <div id="dashboardAdmin" class="hidden">
+      <div class="topbar-corp" style="padding:16px 22px;">
+        <div>
+          <h1 style="font-size:18px;">Centro de Supervisión y Administración de Espacios</h1>
+          <p>Sesión cifrada activa: <b id="lblNombreAdmin" style="color:#fff;"></b></p>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-danger btn-sm" onclick="abrirModalEmergencia()">Agendar Sesión Prioritaria</button>
+          <button class="btn btn-outline btn-sm" style="background:#1e293b; color:#fff; border-color:#475569;" onclick="abrirLogisticaDesdeAdmin()">Módulo Mobiliario</button>
+          <button class="btn btn-outline btn-sm" style="background:#1e293b; color:#fff; border-color:#475569;" onclick="activarVista('RESERVA')">Formulario</button>
+          <button class="btn btn-outline btn-sm" style="background:#1e293b; color:#fff; border-color:#475569;" onclick="activarVista('KIOSCO')">Vista Kiosco</button>
+          <button class="btn btn-warning btn-sm" onclick="cerrarSesionAdmin()">Cerrar Sesión</button>
+        </div>
+      </div>
+
+      <div class="admin-nav">
+        <button id="btnSub1" class="active" onclick="abrirSubmenuAdmin(1)">1. Últimas Solicitudes (<span id="contPendientes">0</span>)</button>
+        <button id="btnSub2" onclick="abrirSubmenuAdmin(2)">2. Historial y Auditoría</button>
+        <button id="btnSub3" onclick="abrirSubmenuAdmin(3)">3. Calendario Mensual</button>
+        <button id="btnSub4" onclick="abrirSubmenuAdmin(4)">4. Programas y Unidades</button>
+        <button id="btnSub5" onclick="abrirSubmenuAdmin(5)">5. Salones, Personal y Accesos</button>
+        <button id="btnSub6" onclick="abrirSubmenuAdmin(6)">6. Configuración y Apps GitHub</button>
+      </div>
+
+      
+      <div id="subMenu1" class="card">
+        <div class="section-header">
+          <span>Bandeja de Control Rápido — Últimas 10 Solicitudes Registradas</span>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <select id="filtroEstadoAdmin" onchange="renderizarTablaReservasAdmin()" style="width:200px; margin:0;">
+              <option value="TODAS">Mostrar estado: Todos</option>
+              <option value="PENDIENTE">Solo Pendientes</option>
+              <option value="APROBADA">Solo Aprobadas</option>
+              <option value="REPROGRAMAR">Por Reprogramar</option>
+            </select>
+            <button class="btn btn-outline btn-sm" onclick="abrirSubmenuAdmin(2)">Ver Historial Completo →</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Código / Estado</th>
+                <th>Salón y Horario</th>
+                <th>Unidad y Solicitante</th>
+                <th>Requerimientos y Estado de Montaje</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyReservasAdmin"></tbody>
+          </table>
+        </div>
+      </div>
+
+      
+      <div id="subMenu2" class="card hidden">
+        <div class="section-header">
+          <span>Historial General de Solicitudes y Auditoría</span>
+          <button class="btn btn-success btn-sm" onclick="exportarHistorialCSV()">Descargar Reporte Excel (.CSV)</button>
+        </div>
+        <div class="grid-4" style="background:#f8fafc; padding:12px; border-radius:6px; border:1px solid #e2e8f0; margin-bottom:14px;">
+          <div>
+            <label>Buscar por Código, Nombre o Unidad</label>
+            <input type="text" id="histBuscarTexto" placeholder="Ej. RES-, Juan, Nutrición..." style="margin:0;" oninput="renderizarTablaHistorialAdmin()">
+          </div>
+          <div>
+            <label>Filtrar por Salón</label>
+            <select id="histFiltroSalon" style="margin:0;" onchange="renderizarTablaHistorialAdmin()">
+              <option value="TODOS">Todos los Salones</option>
+            </select>
+          </div>
+          <div>
+            <label>Filtrar por Estado</label>
+            <select id="histFiltroEstado" style="margin:0;" onchange="renderizarTablaHistorialAdmin()">
+              <option value="TODOS">Todos los Estados</option>
+              <option value="APROBADA">Aprobadas</option>
+              <option value="PENDIENTE">Pendientes</option>
+              <option value="RECHAZADA">Rechazadas / Canceladas</option>
+              <option value="FINALIZADA">Finalizadas</option>
+            </select>
+          </div>
+          <div>
+            <label>Filtrar por Fecha Exacta</label>
+            <input type="date" id="histFiltroFecha" style="margin:0;" onchange="renderizarTablaHistorialAdmin()">
+          </div>
+        </div>
+        <div style="font-size:12px; color:#64748b; margin-bottom:8px; display:flex; justify-content:space-between;">
+          <span id="lblConteoHistorial">Mostrando registros</span>
+          <a href="javascript:void(0)" onclick="limpiarFiltrosHistorial()" style="color:var(--primary); text-decoration:none; font-weight:600;">Limpiar filtros</a>
+        </div>
+        <div style="overflow-x:auto; max-height:520px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Código / Estado</th>
+                <th>Salón y Fecha</th>
+                <th>Unidad / Solicitante</th>
+                <th>Mobiliario, Equipo y Montaje</th>
+                <th>Gestión</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyHistorialAdmin"></tbody>
+          </table>
+        </div>
+      </div>
+
+      
+      <div id="subMenu3" class="card hidden">
+        <div class="cal-header">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button class="btn btn-outline btn-sm" onclick="cambiarMesCalendario(-1)">◀ Anterior</button>
+            <h2 id="calTituloMes" style="margin:0; font-size:17px; min-width:180px; text-align:center; color:var(--navy);">Mes Año</h2>
+            <button class="btn btn-outline btn-sm" onclick="cambiarMesCalendario(1)">Siguiente ▶</button>
+          </div>
+          <select id="calFiltroSalon" onchange="renderizarCalendarioMensual()" style="width:220px; margin:0;">
+            <option value="TODOS">Todos los Salones</option>
+          </select>
+        </div>
+        <div style="font-size:12px; color:#475569; margin-bottom:10px; display:flex; gap:16px; flex-wrap:wrap;">
+          <span><b style="color:var(--success);">■ Verde:</b> Aprobada</span>
+          <span><b style="color:var(--warning);">■ Ámbar:</b> Pendiente / Reprogramar</span>
+          <span>Seleccione cualquier día para inspeccionar horarios y gestionar solicitudes.</span>
+        </div>
+        <div class="cal-grid" style="margin-bottom:6px;">
+          <div class="cal-day-name">Dom</div><div class="cal-day-name">Lun</div><div class="cal-day-name">Mar</div>
+          <div class="cal-day-name">Mié</div><div class="cal-day-name">Jue</div><div class="cal-day-name">Vie</div><div class="cal-day-name">Sáb</div>
+        </div>
+        <div id="calGridDias" class="cal-grid"></div>
+      </div>
+
+      
+      <div id="subMenu4" class="card hidden">
+        <div class="section-header"><span>Catálogo de Programas de Salud y Unidades Administrativas</span></div>
+        <div style="background:#f8fafc; padding:14px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:14px;">
+          <input type="hidden" id="editDeptoId">
+          <div class="grid-3">
+            <div>
+              <label>Nombre del Programa o Unidad *</label>
+              <input type="text" id="deptoNombreInput" placeholder="Nombre oficial..." onkeydown="if(event.key==='Enter') guardarDeptoDesdeAdmin()">
+            </div>
+            <div>
+              <label>Clasificación *</label>
+              <select id="deptoCatInput">
+                <option value="Programa de Salud">Programa de Salud</option>
+                <option value="Administrativo">Departamento Administrativo</option>
+              </select>
+            </div>
+            <div>
+              <label>Disponibilidad en Formulario</label>
+              <select id="deptoActivoInput">
+                <option value="SI">SI (Visible)</option>
+                <option value="NO">NO (Oculto)</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-navy" id="btnGuardarDepto" onclick="guardarDeptoDesdeAdmin()">Guardar Registro</button>
+            <button class="btn btn-outline hidden" id="btnCancelarDepto" onclick="limpiarFormDepto()">Cancelar Edición</button>
+          </div>
+        </div>
+
+        <input type="text" id="buscarEnTablaDeptos" placeholder="Filtrar catálogo por nombre o categoría..." oninput="renderizarTablaDeptosAdmin()">
+        <div style="overflow-x:auto; max-height:420px;">
+          <table>
+            <thead>
+              <tr><th>ID</th><th>Nombre de la Unidad / Programa</th><th>Categoría</th><th>Estado</th><th>Acciones</th></tr>
+            </thead>
+            <tbody id="tbodyDeptosAdmin"></tbody>
+          </table>
+        </div>
+      </div>
+
+      
+      <div id="subMenu5" class="hidden">
+        
+        <div class="card">
+          <div class="section-header"><span>Gestión de Salones e Infraestructura</span></div>
+          <div style="background:#f8fafc; padding:14px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:14px;">
+            <input type="hidden" id="editSalonId">
+            <div class="grid-4">
+              <div>
+                <label>Nombre del Salón *</label>
+                <input type="text" id="salNombreInput" placeholder="Ej. Salón 3" onkeydown="if(event.key==='Enter') guardarSalonDesdeAdmin()">
+              </div>
+              <div>
+                <label>Capacidad Máxima *</label>
+                <input type="number" id="salCapInput" placeholder="Ej. 30" onkeydown="if(event.key==='Enter') guardarSalonDesdeAdmin()">
+              </div>
+              <div>
+                <label>Ubicación Física</label>
+                <input type="text" id="salUbiInput" placeholder="Ej. Primer Nivel" onkeydown="if(event.key==='Enter') guardarSalonDesdeAdmin()">
+              </div>
+              <div>
+                <label>Estado Operativo</label>
+                <select id="salActivoInput">
+                  <option value="SI">HABILITADO</option>
+                  <option value="NO">EN MANTENIMIENTO</option>
+                </select>
+              </div>
+            </div>
+            <label>Equipamiento Instalado</label>
+            <input type="text" id="salEqInput" placeholder="Ej. Pantalla Interactiva, Sistema de Audio, Tablet Kiosco..." onkeydown="if(event.key==='Enter') guardarSalonDesdeAdmin()">
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-navy" id="btnGuardarSalon" onclick="guardarSalonDesdeAdmin()">Guardar Salón</button>
+              <button class="btn btn-outline hidden" id="btnCancelarSalon" onclick="limpiarFormSalon()">Cancelar Edición</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr><th>ID</th><th>Salón</th><th>Capacidad</th><th>Ubicación / Equipamiento</th><th>Estado</th><th>Acciones</th></tr>
+              </thead>
+              <tbody id="tbodySalonesAdmin"></tbody>
+            </table>
+          </div>
+        </div>
+
+        
+        <div class="card">
+          <div class="section-header">
+            <span>Personal de Mobiliario y Logística (Órdenes de Montaje y Avisos de Confirmación)</span>
+          </div>
+          <div style="background:#f8fafc; padding:14px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:14px;">
+            <input type="hidden" id="editLogId">
+            <div class="grid-4">
+              <div>
+                <label>Nombre del Encargado *</label>
+                <input type="text" id="logNombre" placeholder="Nombre y Apellido" onkeydown="if(event.key==='Enter') guardarPersonalLogisticaForm()">
+              </div>
+              <div>
+                <label>Teléfono / WhatsApp</label>
+                <input type="text" id="logTelefono" placeholder="Ej. 50255554444" onkeydown="if(event.key==='Enter') guardarPersonalLogisticaForm()">
+              </div>
+              <div>
+                <label>Correo Electrónico</label>
+                <input type="email" id="logCorreo" placeholder="logistica@wuqukawoq.org" onkeydown="if(event.key==='Enter') guardarPersonalLogisticaForm()">
+              </div>
+              <div>
+                <label>PIN de Acceso Logística *</label>
+                <input type="password" id="logPin" placeholder="Nuevo PIN (o dejar vacío)" onkeydown="if(event.key==='Enter') guardarPersonalLogisticaForm()">
+              </div>
+            </div>
+            <div class="grid-2">
+              <div>
+                <label>Recibir Órdenes y Recordatorios de Montaje</label>
+                <select id="logAlertas">
+                  <option value="SI">SI (Recibir órdenes de trabajo)</option>
+                  <option value="NO">NO (Pausado)</option>
+                </select>
+              </div>
+              <div>
+                <label>Recibir Aviso cuando otro compañero ya instaló el mobiliario</label>
+                <select id="logAvisoComp">
+                  <option value="SI">SI (Avisar para evitar traslado innecesario)</option>
+                  <option value="NO">NO</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-navy" id="btnGuardarLog" onclick="guardarPersonalLogisticaForm()">Guardar Personal de Logística</button>
+              <button class="btn btn-outline hidden" id="btnCancelarLog" onclick="limpiarFormLogistica()">Cancelar Edición</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr><th>ID</th><th>Nombre</th><th>Contacto</th><th>PIN</th><th>Órdenes Montaje</th><th>Aviso Compañero</th><th>Acciones</th></tr>
+              </thead>
+              <tbody id="tbodyLogisticaAdmin"></tbody>
+            </table>
+          </div>
+        </div>
+
+        
+        <div class="card">
+          <div class="section-header"><span>Cuentas de Administradores y Permisos de Notificación</span></div>
+          <div style="background:#f8fafc; padding:14px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:14px;">
+            <input type="hidden" id="editAdmId">
+            <div class="grid-4">
+              <div>
+                <label>Nombre del Administrador *</label>
+                <input type="text" id="admNombre" placeholder="Nombre y Apellido" onkeydown="if(event.key==='Enter') guardarAdminDesdeForm()">
+              </div>
+              <div>
+                <label>Correo Electrónico *</label>
+                <input type="email" id="admCorreo" placeholder="admin@wuqukawoq.org" onkeydown="if(event.key==='Enter') guardarAdminDesdeForm()">
+              </div>
+              <div>
+                <label>PIN de Seguridad *</label>
+                <input type="password" id="admPin" placeholder="Nuevo PIN (o dejar vacío)" onkeydown="if(event.key==='Enter') guardarAdminDesdeForm()">
+              </div>
+              <div>
+                <label>Nivel de Acceso</label>
+                <select id="admRol">
+                  <option value="Admin">Administrador</option>
+                  <option value="SuperAdmin">SuperAdmin</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid-3">
+              <div>
+                <label>Recibir Solicitudes Nuevas</label>
+                <select id="admNotif"><option value="SI">SI</option><option value="NO">NO</option></select>
+              </div>
+              <div>
+                <label>Recibir Alertas de Mobiliario</label>
+                <select id="admLogistica"><option value="SI">SI</option><option value="NO">NO</option></select>
+              </div>
+              <div>
+                <label>Recibir Confirmación de Montaje</label>
+                <select id="admAvisoComp"><option value="SI">SI</option><option value="NO">NO</option></select>
+              </div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-navy" id="btnGuardarAdmin" onclick="guardarAdminDesdeForm()">Guardar Administrador</button>
+              <button class="btn btn-outline hidden" id="btnCancelarAdmin" onclick="limpiarFormAdmin()">Cancelar Edición</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr><th>Nombre / Rol</th><th>Correo</th><th>PIN</th><th>Solicitudes</th><th>Alertas Logística</th><th>Aviso Montaje</th><th>Acciones</th></tr>
+              </thead>
+              <tbody id="tbodyAdmins"></tbody>
+            </table>
+          </div>
+        </div>
+
+        
+        <div class="card">
+          <div class="section-header"><span>Directorio de Soporte Técnico</span></div>
+          <div class="grid-3" style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:12px;">
+            <input type="text" id="sopNombre" placeholder="Nombre o Unidad de Soporte" style="margin:0;" onkeydown="if(event.key==='Enter') crearNuevoSoporte()">
+            <input type="text" id="sopTelefono" placeholder="Teléfono / WhatsApp (Ej. 50255554444)" style="margin:0;" onkeydown="if(event.key==='Enter') crearNuevoSoporte()">
+            <div style="display:flex; gap:6px;">
+              <input type="email" id="sopCorreo" placeholder="soporte@wuqukawoq.org" style="margin:0;" onkeydown="if(event.key==='Enter') crearNuevoSoporte()">
+              <button class="btn btn-navy" onclick="crearNuevoSoporte()">Añadir</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr><th>Contacto</th><th>Teléfono / WhatsApp</th><th>Correo</th><th>Recibe Reportes</th><th>Acciones</th></tr>
+              </thead>
+              <tbody id="tbodySoporte"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      
+      <div id="subMenu6" class="card hidden">
+        <div class="section-header"><span>1. Repositorio Compartido de Documentos (Google Drive)</span></div>
+        <div style="display:flex; gap:10px; margin-bottom:18px;">
+          <input type="text" id="cfgCarpetaDrive" placeholder="Pegue el enlace https://drive.google.com/drive/folders/... o su ID" style="margin:0;">
+          <button class="btn btn-outline" style="white-space:nowrap;" onclick="abrirExploradorDrive('PROBAR')">Verificar Conexión</button>
+        </div>
+
+        <div class="section-header"><span>2. Programación de Horarios, Alertas de Mobiliario y Cuota de Correos</span></div>
+        <div class="grid-3">
+          <div>
+            <label>Hora Exacta del Recordatorio Diario (Horas y Minutos):</label>
+            <input type="time" id="cfgHoraRecordatorio" value="07:00">
+          </div>
+          <div>
+            <label>Alerta Previa si no han montado (Minutos antes):</label>
+            <input type="number" id="cfgMinutosAlertaPrevia" min="5" max="180" placeholder="Ej. 30">
+          </div>
+          <div>
+            <label>Tiempo de Transición / Colchón entre sesiones (Minutos):</label>
+            <input type="number" id="cfgColchon" min="0" max="60">
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div>
+            <label>Modo de Aprobación de Solicitudes:</label>
+            <select id="cfgModo">
+              <option value="MANUAL">MANUAL (Requiere aprobación de Admin)</option>
+              <option value="AUTOMATICO">AUTOMÁTICO (Aprobación inmediata)</option>
+            </select>
+          </div>
+          <div>
+            <label>Switch Maestro de Correos del Sistema:</label>
+            <select id="cfgCorreos">
+              <option value="SI">ENCENDIDO (Envío activo)</option>
+              <option value="NO">APAGADO (Sin envíos)</option>
+            </select>
+          </div>
+          <div>
+            <label>Avisar al equipo cuando alguien ya montó el mobiliario:</label>
+            <select id="cfgNotificarCompaneros">
+              <option value="SI">ENCENDIDO (Avisar a compañeros activos)</option>
+              <option value="NO">APAGADO (Ahorrar cuota de correos)</option>
+            </select>
+          </div>
+        </div>
+
+        <label>Instrucción de Administración incluida en las Órdenes de Mobiliario:</label>
+        <input type="text" id="cfgMensajeMobiliario" placeholder="Ej. Verificar que el mobiliario y audio queden instalados 30 minutos antes.">
+
+        <label>URL Pública en GitHub Pages donde se aloja `1_App_General_y_Admin.html`:</label>
+        <input type="url" id="cfgUrlPuente" placeholder="Ej. https://cuenta.github.io/repositorio/1_App_General_y_Admin.html">
+
+        <div class="section-header" style="margin-top:10px;"><span>3. Personalización del Pie de Página Institucional (Footer)</span></div>
+        <div class="grid-2">
+          <div>
+            <label>Texto de Derechos Reservados / Institución:</label>
+            <input type="text" id="cfgFooterDerechos" placeholder="Ej. Todos los derechos reservados — Wuqu' Kawoq">
+          </div>
+          <div>
+            <label>Creado / Desarrollado por:</label>
+            <input type="text" id="cfgFooterCreador" placeholder="Ej. Departamento de Informática y Sistemas">
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
+          <button class="btn btn-success" onclick="guardarConfiguracionGeneral()">Guardar Toda la Configuración Institucional</button>
+          <button class="btn btn-outline" onclick="probarAlertaPreviaManual()">Probar Alerta Previa Ahora</button>
+          <button class="btn btn-outline" onclick="dispararRecordatoriosHoyManual()">Enviar Recordatorio Diario Ahora</button>
+        </div>
+
+        <hr style="border:none; border-top:1px solid #e2e8f0; margin:24px 0;">
+        <div class="section-header"><span>4. Generador Dinámico de Aplicaciones para GitHub Pages (Todos los Salones)</span></div>
+        <p style="font-size:13px; color:#475569; margin-top:0; line-height:1.5;">
+          Descargue los paquetes HTML generados directamente desde el servidor (libres de scripts de sesión de Google y protegidos con validación por token):
+        </p>
+        <div id="contenedorBotonesDescarga" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
+      </div>
+    </div>
+  </div>
+
+  
+  
+  <div id="modalCalendarioPublico" class="modal-overlay">
+    <div class="modal-card" style="max-width:860px;">
+      <div class="modal-header">
+        <strong>Calendario Mensual de Disponibilidad de Espacios</strong>
+        <button class="btn btn-danger btn-sm" onclick="cerrarCalendarioPublicoModal()">Cerrar</button>
+      </div>
+      <div class="modal-body">
+        <div class="cal-header">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button class="btn btn-outline btn-sm" onclick="cambiarMesCalendarioPublico(-1)">◀ Anterior</button>
+            <h3 id="calPubTituloMes" style="margin:0; min-width:160px; text-align:center; color:var(--navy);">Mes Año</h3>
+            <button class="btn btn-outline btn-sm" onclick="cambiarMesCalendarioPublico(1)">Siguiente ▶</button>
+          </div>
+          <select id="calPubFiltroSalon" onchange="renderizarCalendarioPublico()" style="width:220px; margin:0;">
+            <option value="TODOS">Todos los Salones</option>
+          </select>
+        </div>
+        <div style="font-size:12px; color:#475569; margin-bottom:10px;">
+          <b style="color:var(--danger);">■ Rojo:</b> Horario Reservado | <b style="color:var(--warning);">■ Ámbar:</b> En Revisión — Seleccione un día para consultar disponibilidad o elegir fecha.
+        </div>
+        <div class="cal-grid" style="margin-bottom:6px;">
+          <div class="cal-day-name">Dom</div><div class="cal-day-name">Lun</div><div class="cal-day-name">Mar</div>
+          <div class="cal-day-name">Mié</div><div class="cal-day-name">Jue</div><div class="cal-day-name">Vie</div><div class="cal-day-name">Sáb</div>
+        </div>
+        <div id="calPubGridDias" class="cal-grid"></div>
+        <div id="calPubDetalleDia" class="hidden" style="margin-top:14px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:14px;"></div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div id="modalExtensionKiosco" class="modal-overlay">
+    <div class="modal-card" style="max-width:500px;">
+      <div class="modal-header">
+        <strong>Solicitar Extensión de Tiempo de Sesión</strong>
+        <button class="btn btn-danger btn-sm" onclick="cerrarModalExtensionKiosco()">Cerrar</button>
+      </div>
+      <div class="modal-body" style="text-align:center;">
+        <p style="font-size:13.5px; color:#334155; margin-top:0;">
+          Seleccione los minutos adicionales requeridos. El sistema verificará automáticamente que no exista conflicto con la siguiente sesión:
+        </p>
+        <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin:16px 0;">
+          <button class="btn btn-navy" onclick="procesarSolicitudExtensionKiosco(5, false)">+ 5 Minutos</button>
+          <button class="btn btn-navy" onclick="procesarSolicitudExtensionKiosco(10, false)">+ 10 Minutos</button>
+          <button class="btn btn-navy" onclick="procesarSolicitudExtensionKiosco(15, false)">+ 15 Minutos</button>
+          <button class="btn btn-navy" onclick="procesarSolicitudExtensionKiosco(30, false)">+ 30 Minutos</button>
+        </div>
+        <div id="cajaRespuestaExtension" class="hidden" style="background:#fffbeb; border:1px solid #f59e0b; padding:14px; border-radius:8px; margin-top:12px;"></div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div id="modalDiaCalendario" class="modal-overlay">
+    <div class="modal-card" style="max-width:650px;">
+      <div class="modal-header">
+        <strong id="tituloDiaCalendario">Programación del Día</strong>
+        <button class="btn btn-danger btn-sm" onclick="cerrarModalDiaCalendario()">Cerrar</button>
+      </div>
+      <div class="modal-body" id="cuerpoDiaCalendario"></div>
+    </div>
+  </div>
+
+  
+  <div id="modalDrive" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <strong style="font-size:15px;">Repositorio Institucional de Documentos</strong>
+          <div id="driveRutaActual" style="font-size:12px; color:#cbd5e1;">Carpeta Principal</div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="cerrarExploradorDrive()">Cerrar</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+          <button id="btnVolverRaizDrive" class="btn btn-outline btn-sm hidden" style="white-space:nowrap;" onclick="cargarCarpetaDrive('')">← Volver a Raíz</button>
+          <input type="text" id="buscadorArchivosDrive" placeholder="Filtrar carpetas o documentos..." style="margin:0;" oninput="filtrarElementosDrive()">
+        </div>
+        <div id="driveEstadoCarga" style="text-align:center; padding:20px; font-weight:600; color:var(--primary);">Consultando repositorio...</div>
+        <div id="contenedorSubcarpetasDrive"></div>
+        <div id="contenedorArchivosDrive"></div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div id="modalReprogramar" class="modal-overlay">
+    <div class="modal-card" style="max-width:520px;">
+      <div class="modal-header">
+        <strong id="tituloModalReprog">Reprogramar Sesión</strong>
+        <button class="btn btn-danger btn-sm" onclick="cerrarModalReprogramar()">Cerrar</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="repIdReserva">
+        <label>Justificación o Motivo de la Reprogramación *</label>
+        <input type="text" id="repMotivo" placeholder="Ej. Sesión prioritaria institucional">
+
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:14px; border-radius:8px; margin-bottom:12px;">
+          <strong style="display:block; margin-bottom:8px; color:var(--navy); font-size:13px;">Opción A: Asignar directamente el nuevo horario (Valida disponibilidad)</strong>
+          <label>Salón:</label>
+          <select id="repSalon"></select>
+          <div class="grid-3">
+            <div><label>Nueva Fecha:</label><input type="date" id="repFecha"></div>
+            <div><label>Hora Inicio:</label><input type="time" id="repHoraIni"></div>
+            <div><label>Hora Fin:</label><input type="time" id="repHoraFin"></div>
+          </div>
+          <button class="btn btn-success" style="width:100%;" onclick="ejecutarReprogramacionAdmin('CAMBIAR_HORARIO')">Aplicar Nuevo Horario y Notificar</button>
+        </div>
+
+        <div style="background:#fffbeb; border:1px solid #fde68a; padding:14px; border-radius:8px;">
+          <strong style="display:block; margin-bottom:6px; color:#92400e; font-size:13px;">Opción B: Solicitar al usuario que seleccione un nuevo horario</strong>
+          <button class="btn btn-warning" style="width:100%;" onclick="ejecutarReprogramacionAdmin('PEDIR_AL_USUARIO')">Enviar Enlace Seguro de Reprogramación</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div id="modalEmergencia" class="modal-overlay">
+    <div class="modal-card" style="max-width:520px;">
+      <div class="modal-header" style="background:var(--danger);">
+        <strong>Agendar Sesión Institucional Prioritaria</strong>
+        <button class="btn btn-navy btn-sm" onclick="cerrarModalEmergencia()">Cerrar</button>
+      </div>
+      <div class="modal-body">
+        <label>Salón *</label>
+        <select id="emgSalon"></select>
+        <label>Unidad o Dirección Prioritaria *</label>
+        <input type="text" id="emgDepto" value="Dirección General — Sesión Prioritaria">
+        <div class="grid-3">
+          <div><label>Fecha *</label><input type="date" id="emgFecha"></div>
+          <div><label>Inicio *</label><input type="time" id="emgIni"></div>
+          <div><label>Fin *</label><input type="time" id="emgFin"></div>
+        </div>
+        <label>Motivo de la Sesión *</label>
+        <input type="text" id="emgMotivo" placeholder="Ej. Comité de Emergencia Sanitaria" onkeydown="if(event.key==='Enter') confirmarReservaEmergencia()">
+        <button class="btn btn-danger" style="width:100%; padding:11px;" onclick="confirmarReservaEmergencia()">Confirmar y Agendar Sesión Prioritaria</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <div id="modalSoporteReporte" class="modal-overlay">
+    <div class="modal-card" style="max-width:460px;">
+      <div class="modal-header">
+        <strong>Solicitud de Asistencia Técnica</strong>
+        <button class="btn btn-danger btn-sm" onclick="cerrarModalReporteSoporte()">Cerrar</button>
+      </div>
+      <div class="modal-body">
+        <label>Nombre y Unidad Solicitante *</label>
+        <input type="text" id="repSopNombre" placeholder="Ej. Juan Pérez — Epidemiología">
+        <label>Teléfono o Correo de Contacto *</label>
+        <input type="text" id="repSopContacto" placeholder="Teléfono o correo electrónico">
+        <label>Descripción del Inconveniente *</label>
+        <textarea id="repSopMensaje" rows="3" placeholder="Describa brevemente la consulta o requerimiento..."></textarea>
+        <button class="btn btn-primary" onclick="enviarMensajeSoporte()">Enviar Solicitud a Soporte</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <div id="modalPresentacion" class="modal-visor">
+    <div class="modal-bar">
+      <strong id="tituloPresentacion" style="font-size:13.5px;">Visor de Documentos</strong>
+      <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+        <button class="btn btn-outline btn-sm" style="background:#1e293b; color:#fff; border-color:#475569;" onclick="cambiarZoomVisor(-25)">Zoom -</button>
+        <span id="lblZoomActual" style="font-weight:700; font-size:12.5px; min-width:46px; text-align:center;">100%</span>
+        <button class="btn btn-outline btn-sm" style="background:#1e293b; color:#fff; border-color:#475569;" onclick="cambiarZoomVisor(25)">Zoom +</button>
+        <button class="btn btn-outline btn-sm" style="background:#1e293b; color:#fff; border-color:#475569;" onclick="resetZoomVisor()">100%</button>
+        <button id="btnModoMover" class="btn btn-warning btn-sm" onclick="toggleModoMoverConDedos()">Desplazamiento Táctil: OFF</button>
+        <button class="btn btn-outline btn-sm" style="background:#1e293b; color:#fff; border-color:#475569;" onclick="togglePantallaCompleta()">Pantalla Completa</button>
+        <button class="btn btn-danger btn-sm" onclick="cerrarPresentacion()">Cerrar</button>
+      </div>
+    </div>
+    <div id="visorScrollContainer" class="visor-scroll-wrap">
+      <div id="visorCanvasZoom" class="visor-canvas">
+        <div id="escudoTactilMover" class="pan-shield"></div>
+        <iframe id="iframePresentacion" class="modal-frame" allow="autoplay; fullscreen"></iframe>
+      </div>
+    </div>
+  </div>
+
+  
+  <footer id="piePaginaInstitucional" class="corp-footer">
+    <div>© <span id="lblAnioFooter"></span> <strong id="lblFooterDerechos">Todos los derechos reservados — Sistema Institucional de Gestión de Espacios</strong></div>
+    <div style="margin-top:3px;">Desarrollado y administrado por: <strong id="lblFooterCreador">Departamento de Informática y Sistemas</strong></div>
+  </footer>
+
+  
+  <script id="scriptPrincipalSistema">
+    let MODO_VISTA_SERVIDOR = "KIOSCO" || "RESERVA";
+    let SALON_PARAM_SERVIDOR = "SAL-02" || "";
+    let ID_REPROGRAMAR_URL = "" || "";
+    let TOKEN_REPROGRAMAR_URL = "";
+    let URL_BASE_SISTEMA = "https://script.google.com/macros/s/AKfycbzW0er_fCB5w3l85J4_LqLsWswHEgCnCSNAEijDKT56qXF7h14uQAGSf7Nm_rpt8mjc/exec" || window.location.href.split("?")[0];
+
+    const urlParamsNavegador = new URLSearchParams(window.location.search);
+    if (urlParamsNavegador.get("vista")) MODO_VISTA_SERVIDOR = urlParamsNavegador.get("vista").toUpperCase();
+    if (urlParamsNavegador.get("salon")) SALON_PARAM_SERVIDOR = urlParamsNavegador.get("salon");
+    if (urlParamsNavegador.get("reprogramar")) ID_REPROGRAMAR_URL = urlParamsNavegador.get("reprogramar");
+    if (urlParamsNavegador.get("tk")) TOKEN_REPROGRAMAR_URL = urlParamsNavegador.get("tk");
+
+    // Token criptográfico de sesión activa en memoria (Admin o Logística)
+    let TOKEN_SESION_ACTUAL = "";
+
+    // ADAPTADOR DE SEGURIDAD ZERO-TRUST: Adjunta siempre el Token de Sesión y Sello Anti-Caché (_t)
+    function callServer(nombreFuncion, argumentosArray, onSuccess, onError) {
+      const args = Array.isArray(argumentosArray) ? argumentosArray : [];
+      const sep = URL_BASE_SISTEMA.indexOf("?") !== -1 ? "&" : "?";
+      const urlGet = URL_BASE_SISTEMA + sep + "modoApi=1&fn=" + encodeURIComponent(nombreFuncion) +
+                     "&payload=" + encodeURIComponent(JSON.stringify(args)) +
+                     "&token=" + encodeURIComponent(TOKEN_SESION_ACTUAL) +
+                     "&_t=" + Date.now();
+
+      fetch(urlGet, { method: "GET", mode: "cors", credentials: "omit", redirect: "follow", cache: "no-store" })
+        .then(r => r.json())
+        .then(data => {
+          if (data && data.sesionExpirada) {
+            manejarExpiracionDeSesion(data.mensaje);
+            return;
+          }
+          if (onSuccess) onSuccess(data);
+        })
+        .catch(() => {
+          fetch(URL_BASE_SISTEMA + sep + "_t=" + Date.now(), {
+            method: "POST",
+            mode: "cors",
+            credentials: "omit",
+            redirect: "follow",
+            cache: "no-store",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ fn: nombreFuncion, args: args, token: TOKEN_SESION_ACTUAL })
+          })
+          .then(r => r.json())
+          .then(data => {
+            if (data && data.sesionExpirada) {
+              manejarExpiracionDeSesion(data.mensaje);
+              return;
+            }
+            if (onSuccess) onSuccess(data);
+          })
+          .catch(e2 => {
+            console.error("Error de comunicación:", e2);
+            if (onError) onError(e2);
+          });
+        });
+    }
+
+    function manejarExpiracionDeSesion(msj) {
+      alert(msj || "Su sesión de seguridad ha expirado. Inicie sesión nuevamente.");
+      cerrarSesionAdmin();
+      cerrarSesionLogistica();
+    }
+
+    let SALONES_PUBLICOS = [];
+    let DEPTOS_PUBLICOS = [];
+    let SOPORTE_PUBLICO = [];
+    let RESERVAS_PUBLICAS_CACHE = [];
+    let ARCHIVOS_DRIVE_SELECCIONADOS = [];
+    let CACHE_EXPLORADOR_DRIVE = { subcarpetas: [], archivos: [] };
+    let MODO_EXPLORADOR_ACTUAL = "KIOSCO";
+
+    let ADMIN_LOGUEADO = null;
+    let LOGISTICA_LOGUEADO = null;
+    let DATOS_ADMIN_CACHE = null;
+    let CONFIG_ADMIN_CARGADA_INICIAL = false;
+    let DATOS_LOGISTICA_CACHE = [];
+    let ID_RESERVA_KIOSCO = null;
+
+    let ZOOM_NIVEL_ACTUAL = 100;
+    let MODO_MOVER_DEDOS_ACTIVO = false;
+    let DATOS_ACCION_CORREO_PENDIENTE = { id: "", admin: "", tk: "" };
+
+    let CAL_MES_ACTUAL = new Date().getMonth();
+    let CAL_ANIO_ACTUAL = new Date().getFullYear();
+    let CAL_PUB_MES = new Date().getMonth();
+    let CAL_PUB_ANIO = new Date().getFullYear();
+
+    window.onload = function() {
+      document.getElementById("lblAnioFooter").innerText = new Date().getFullYear();
+
+      const accCorreo = urlParamsNavegador.get("accion");
+      const idCorreo = urlParamsNavegador.get("id");
+      const tkCorreo = urlParamsNavegador.get("tk") || "";
+      if (accCorreo && idCorreo) {
+        procesarBotonCorreoEnModoAutonomo(accCorreo, idCorreo, urlParamsNavegador.get("admin") || "Administrador", tkCorreo);
+        return;
+      }
+
+      const hoy = new Date();
+      const fechaHoyISO = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
+      document.getElementById("fechaUso").value = fechaHoyISO;
+      document.getElementById("emgFecha").value = fechaHoyISO;
+
+      inicializarEventosArrastreTactilVisor();
+      activarVista(MODO_VISTA_SERVIDOR);
+
+      setInterval(() => {
+        const ahora = new Date();
+        const el = document.getElementById("relojDigital");
+        if (el) el.innerText = ahora.toLocaleTimeString();
+        if (ahora.getSeconds() === 0 && !document.getElementById("vistaKiosco").classList.contains("hidden")) {
+          actualizarKiosco();
+        }
+      }, 1000);
+
+      // Pulso de Tablet Kiosco cada 6 segundos
+      setInterval(() => {
+        if (!document.getElementById("vistaKiosco").classList.contains("hidden")) {
+          actualizarKiosco();
+        }
+      }, 6000);
+
+      // Sincronización silenciosa de solicitudes en Admin cada 12 segundos
+      setInterval(() => {
+        if (ADMIN_LOGUEADO && TOKEN_SESION_ACTUAL && !document.getElementById("dashboardAdmin").classList.contains("hidden")) {
+          sincronizarSoloSolicitudesAdmin();
+        }
+      }, 12000);
+
+      cargarCatalogosPublicos();
+
+      document.getElementById("vistaReserva").addEventListener("keydown", function(e) {
+        if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+          e.preventDefault();
+          enviarFormularioReserva();
+        }
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest(".search-box")) {
+          document.getElementById("listaDeptos").style.display = "none";
+        }
+      });
+    };
+
+    // Procesa acciones de correo enviando el Token de Seguridad de la Reserva (`tk`)
+    function procesarBotonCorreoEnModoAutonomo(accion, idReserva, admin, tk) {
+      document.getElementById("vistaAccionCorreo").classList.remove("hidden");
+      DATOS_ACCION_CORREO_PENDIENTE = { id: idReserva, admin: admin, tk: tk };
+
+      if (accion === "rechazar") {
+        document.getElementById("tituloAccionCorreo").innerText = "Rechazar Solicitud " + idReserva;
+        document.getElementById("mensajeAccionCorreo").innerText = "Indique el motivo del rechazo para notificar al solicitante:";
+        document.getElementById("areaMotivoRechazoCorreo").classList.remove("hidden");
+        return;
+      }
+
+      ejecutarLlamadaAccionCorreo(accion, idReserva, admin, "", tk);
+    }
+
+    function confirmarRechazoDesdeVistaCorreo() {
+      const motivo = document.getElementById("txtMotivoRechazoCorreo").value.trim() || "No especificado";
+      document.getElementById("areaMotivoRechazoCorreo").classList.add("hidden");
+      document.getElementById("tituloAccionCorreo").innerText = "Procesando rechazo...";
+      document.getElementById("mensajeAccionCorreo").innerText = "Actualizando registro y enviando notificación...";
+      ejecutarLlamadaAccionCorreo("confirmarRechazo", DATOS_ACCION_CORREO_PENDIENTE.id, DATOS_ACCION_CORREO_PENDIENTE.admin, motivo, DATOS_ACCION_CORREO_PENDIENTE.tk);
+    }
+
+    function ejecutarLlamadaAccionCorreo(accion, idReserva, admin, motivo, tk) {
+      const sep = URL_BASE_SISTEMA.indexOf("?") !== -1 ? "&" : "?";
+      const urlApi = URL_BASE_SISTEMA + sep + "modoApi=1&accion=" + encodeURIComponent(accion) +
+                     "&id=" + encodeURIComponent(idReserva) +
+                     "&admin=" + encodeURIComponent(admin) +
+                     "&motivo=" + encodeURIComponent(motivo) +
+                     "&tk=" + encodeURIComponent(tk || "") +
+                     "&_t=" + Date.now();
+
+      fetch(urlApi, { method: "GET", mode: "cors", credentials: "omit", redirect: "follow", cache: "no-store" })
+        .then(r => r.json())
+        .then(d => {
+          document.getElementById("tituloAccionCorreo").style.color = d.exito ? "#059669" : "#d97706";
+          document.getElementById("tituloAccionCorreo").innerText = d.exito ? "Operación Confirmada" : (d.yaAtendido ? "Registro Ya Atendido Previamente" : "Aviso del Sistema");
+          document.getElementById("mensajeAccionCorreo").innerText = d.mensaje;
+        })
+        .catch(err => {
+          document.getElementById("tituloAccionCorreo").style.color = "#dc2626";
+          document.getElementById("tituloAccionCorreo").innerText = "Error de Comunicación";
+          document.getElementById("mensajeAccionCorreo").innerText = "No fue posible conectar con el servidor: " + err.message;
+        });
+    }
+
+    function volverAlFormularioDesdeCorreo() {
+      window.location.href = window.location.pathname;
+    }
+
+    function activarVista(modo) {
+      document.getElementById("vistaReserva").classList.toggle("hidden", modo !== "RESERVA");
+      document.getElementById("vistaKiosco").classList.toggle("hidden", modo !== "KIOSCO");
+      document.getElementById("vistaLogistica").classList.toggle("hidden", modo !== "LOGISTICA");
+      document.getElementById("vistaAdmin").classList.toggle("hidden", modo !== "ADMIN");
+      document.getElementById("piePaginaInstitucional").classList.toggle("hidden", modo === "KIOSCO");
+
+      if (modo === "KIOSCO") actualizarKiosco();
+      if (modo === "LOGISTICA") {
+        document.getElementById("btnVolverAdminDesdeLog").classList.toggle("hidden", !ADMIN_LOGUEADO);
+        if (TOKEN_SESION_ACTUAL && (LOGISTICA_LOGUEADO || ADMIN_LOGUEADO)) {
+          document.getElementById("cardLoginLogistica").classList.add("hidden");
+          document.getElementById("dashboardLogistica").classList.remove("hidden");
+          cargarVistaLogistica();
+        } else {
+          document.getElementById("dashboardLogistica").classList.add("hidden");
+          document.getElementById("cardLoginLogistica").classList.remove("hidden");
+        }
+      }
+    }
+
+    function abrirLogisticaDesdeAdmin() {
+      if (!verificarSesionAdminActiva()) return;
+      LOGISTICA_LOGUEADO = ADMIN_LOGUEADO;
+      document.getElementById("lblNombreLogistica").innerText = ADMIN_LOGUEADO.nombre;
+      activarVista("LOGISTICA");
+    }
+
+    function actualizarTextosFooter(derechos, creador) {
+      if (derechos) document.getElementById("lblFooterDerechos").innerText = derechos;
+      if (creador) document.getElementById("lblFooterCreador").innerText = creador;
+    }
+
+    function cargarCatalogosPublicos() {
+      callServer("obtenerDatosPublicos", [ID_REPROGRAMAR_URL, TOKEN_REPROGRAMAR_URL], function(res) {
+        if (!res) return;
+        SALONES_PUBLICOS = res.salones || [];
+        DEPTOS_PUBLICOS = res.departamentos || [];
+        SOPORTE_PUBLICO = res.soporte || [];
+        RESERVAS_PUBLICAS_CACHE = res.reservasPublicas || [];
+        document.getElementById("lblColchon").innerText = `(+${res.tiempoColchon} min de transición)`;
+
+        actualizarTextosFooter(res.footerDerechos, res.footerCreador);
+
+        const selRes = document.getElementById("salonSelect");
+        const selKio = document.getElementById("kioscoSelectorSalon");
+        const selRep = document.getElementById("repSalon");
+        const selEmg = document.getElementById("emgSalon");
+        const selCal = document.getElementById("calFiltroSalon");
+        const selCalPub = document.getElementById("calPubFiltroSalon");
+        const selHistSal = document.getElementById("histFiltroSalon");
+
+        selRes.innerHTML = ""; selKio.innerHTML = ""; selRep.innerHTML = ""; selEmg.innerHTML = "";
+        selCal.innerHTML = `<option value="TODOS">Todos los Salones</option>`;
+        selCalPub.innerHTML = `<option value="TODOS">Todos los Salones</option>`;
+        if (selHistSal) selHistSal.innerHTML = `<option value="TODOS">Todos los Salones</option>`;
+
+        SALONES_PUBLICOS.forEach(s => {
+          selRes.innerHTML += `<option value="${s.nombre}">${s.nombre} (Cap. ${s.capacidad} pers.)</option>`;
+          selRep.innerHTML += `<option value="${s.nombre}">${s.nombre}</option>`;
+          selEmg.innerHTML += `<option value="${s.nombre}">${s.nombre}</option>`;
+          selCal.innerHTML += `<option value="${s.nombre}">${s.nombre}</option>`;
+          selCalPub.innerHTML += `<option value="${s.nombre}">${s.nombre}</option>`;
+          if (selHistSal) selHistSal.innerHTML += `<option value="${s.nombre}">${s.nombre}</option>`;
+
+          const paramLimpio = String(SALON_PARAM_SERVIDOR || "").trim().toLowerCase();
+          const selected = (paramLimpio && (String(s.id).toLowerCase() === paramLimpio || String(s.nombre).toLowerCase() === paramLimpio || String(s.nombre).toLowerCase().indexOf(paramLimpio) !== -1)) ? "selected" : "";
+          selKio.innerHTML += `<option value="${s.id}" ${selected}>${s.nombre}</option>`;
+        });
+
+        if (MODO_VISTA_SERVIDOR === "KIOSCO" && SALON_PARAM_SERVIDOR) {
+          selKio.style.display = "none";
+        }
+
+        if (res.reservaEditar) {
+          const r = res.reservaEditar;
+          document.getElementById("alertaModoReprogramar").classList.remove("hidden");
+          document.getElementById("lblIdReprogramar").innerText = r.id;
+          document.getElementById("salonSelect").value = r.salon;
+          document.getElementById("buscadorDepto").value = r.departamento;
+          document.getElementById("fechaUso").value = r.fechaUso;
+          document.getElementById("horaInicio").value = r.horaInicio;
+          document.getElementById("horaFin").value = r.horaFin;
+          document.getElementById("nombreSolicitante").value = r.solicitante;
+          document.getElementById("correoSolicitante").value = r.correo;
+          document.getElementById("motivoReunion").value = r.motivo;
+          document.getElementById("cantidadPersonas").value = r.personas;
+          document.getElementById("mobiliario").value = r.mobiliario;
+          document.getElementById("equipoTecnico").value = r.equipo;
+          document.getElementById("btnEnviarReserva").innerText = "Confirmar Nuevo Horario Reprogramado";
+        }
+
+        renderizarBotonesSoportePublico();
+        pintarOpcionesDeptos(DEPTOS_PUBLICOS);
+        consultarHorariosFecha();
+        if (MODO_VISTA_SERVIDOR === "KIOSCO") actualizarKiosco();
+      });
+    }
+
+    // ========================================================================
+    // VISOR INTERACTIVO DE TABLET CON ZOOM Y DESPLAZAMIENTO TÁCTIL
+    // ========================================================================
+    function inicializarEventosArrastreTactilVisor() {
+      const escudo = document.getElementById("escudoTactilMover");
+      const contenedor = document.getElementById("visorScrollContainer");
+      let arrastrando = false;
+      let startX = 0, startY = 0, scrollLeftIni = 0, scrollTopIni = 0;
+
+      escudo.addEventListener("touchstart", function(e) {
+        if (e.touches.length === 1) {
+          arrastrando = true;
+          startX = e.touches[0].pageX;
+          startY = e.touches[0].pageY;
+          scrollLeftIni = contenedor.scrollLeft;
+          scrollTopIni = contenedor.scrollTop;
+        }
+      }, { passive: true });
+
+      escudo.addEventListener("touchmove", function(e) {
+        if (!arrastrando || e.touches.length !== 1) return;
+        e.preventDefault();
+        contenedor.scrollLeft = scrollLeftIni + (startX - e.touches[0].pageX);
+        contenedor.scrollTop = scrollTopIni + (startY - e.touches[0].pageY);
+      }, { passive: false });
+
+      escudo.addEventListener("touchend", function() { arrastrando = false; });
+
+      escudo.addEventListener("mousedown", function(e) {
+        arrastrando = true;
+        startX = e.pageX; startY = e.pageY;
+        scrollLeftIni = contenedor.scrollLeft; scrollTopIni = contenedor.scrollTop;
+      });
+      window.addEventListener("mousemove", function(e) {
+        if (!arrastrando) return;
+        contenedor.scrollLeft = scrollLeftIni + (startX - e.pageX);
+        contenedor.scrollTop = scrollTopIni + (startY - e.pageY);
+      });
+      window.addEventListener("mouseup", function() { arrastrando = false; });
+    }
+
+    function cambiarZoomVisor(delta) {
+      ZOOM_NIVEL_ACTUAL = Math.min(350, Math.max(100, ZOOM_NIVEL_ACTUAL + delta));
+      aplicarZoomEnLienzo();
+      if (ZOOM_NIVEL_ACTUAL > 100 && !MODO_MOVER_DEDOS_ACTIVO) {
+        toggleModoMoverConDedos(true);
+      }
+    }
+
+    function resetZoomVisor() {
+      ZOOM_NIVEL_ACTUAL = 100;
+      aplicarZoomEnLienzo();
+      toggleModoMoverConDedos(false);
+    }
+
+    function aplicarZoomEnLienzo() {
+      document.getElementById("lblZoomActual").innerText = ZOOM_NIVEL_ACTUAL + "%";
+      const canvas = document.getElementById("visorCanvasZoom");
+      canvas.style.width = ZOOM_NIVEL_ACTUAL + "%";
+      canvas.style.height = ZOOM_NIVEL_ACTUAL + "%";
+    }
+
+    function toggleModoMoverConDedos(forzarEstado) {
+      MODO_MOVER_DEDOS_ACTIVO = (forzarEstado !== undefined) ? forzarEstado : !MODO_MOVER_DEDOS_ACTIVO;
+      const escudo = document.getElementById("escudoTactilMover");
+      const btn = document.getElementById("btnModoMover");
+      escudo.classList.toggle("active", MODO_MOVER_DEDOS_ACTIVO);
+      btn.innerText = MODO_MOVER_DEDOS_ACTIVO ? "Desplazamiento Táctil: ACTIVO" : "Desplazamiento Táctil: OFF";
+      btn.className = MODO_MOVER_DEDOS_ACTIVO ? "btn btn-success btn-sm" : "btn btn-warning btn-sm";
+    }
+
+    // ========================================================================
+    // MÓDULO DE PERSONAL DE MOBILIARIO (CON AUTENTICACIÓN POR PIN Y TOKEN)
+    // ========================================================================
+    function loginLogistica() {
+      const pin = document.getElementById("pinLogisticaInput").value.trim();
+      if (!pin) return;
+      callServer("autenticarLogisticaPorPin", [pin], function(res) {
+        if (!res.exito) return alert(res.mensaje);
+        TOKEN_SESION_ACTUAL = res.token;
+        LOGISTICA_LOGUEADO = res.encargado;
+        document.getElementById("pinLogisticaInput").value = "";
+        document.getElementById("lblNombreLogistica").innerText = LOGISTICA_LOGUEADO.nombre;
+        document.getElementById("cardLoginLogistica").classList.add("hidden");
+        document.getElementById("dashboardLogistica").classList.remove("hidden");
+
+        if (res.agenda) {
+          DATOS_LOGISTICA_CACHE = res.agenda.reservasAprobadas || [];
+          document.getElementById("notaAdminEnLogistica").innerHTML = `<b>Instrucción de Administración:</b> ${res.agenda.mensajeAdmin || "Verificar instalación de mobiliario y equipo con anticipación."}`;
+          renderizarListaLogisticaOperativa();
+        } else {
+          cargarVistaLogistica();
+        }
+      });
+    }
+
+    function cerrarSesionLogistica() {
+      const tk = TOKEN_SESION_ACTUAL;
+      LOGISTICA_LOGUEADO = null;
+      DATOS_LOGISTICA_CACHE = [];
+      if (!ADMIN_LOGUEADO) TOKEN_SESION_ACTUAL = "";
+      document.getElementById("pinLogisticaInput").value = "";
+      document.getElementById("dashboardLogistica").classList.add("hidden");
+      document.getElementById("cardLoginLogistica").classList.remove("hidden");
+      if (tk && !ADMIN_LOGUEADO) callServer("cerrarSesionSegura", []);
+    }
+
+    function cargarVistaLogistica() {
+      if (!TOKEN_SESION_ACTUAL) return;
+      callServer("obtenerAgendaLogistica", [], function(res) {
+        if (!res) return;
+        DATOS_LOGISTICA_CACHE = res.reservasAprobadas || [];
+        document.getElementById("notaAdminEnLogistica").innerHTML = `<b>Instrucción de Administración:</b> ${res.mensajeAdmin || "Verificar instalación de mobiliario y equipo con anticipación."}`;
+        renderizarListaLogisticaOperativa();
+      });
+    }
+
+    function renderizarListaLogisticaOperativa() {
+      const filtro = document.getElementById("filtroLogisticaVista").value;
+      const lista = DATOS_LOGISTICA_CACHE.filter(r => {
+        const yaListo = String(r.logistica || "").toUpperCase().indexOf("ENTREGADO") !== -1;
+        return filtro === "TODAS" ? true : !yaListo;
+      });
+
+      const cont = document.getElementById("contenedorTarjetasLogistica");
+      if (lista.length === 0) {
+        cont.innerHTML = `<p style="text-align:center; color:var(--success); font-weight:700; padding:20px;">No existen órdenes de montaje pendientes en este momento.</p>`;
+        return;
+      }
+
+      cont.innerHTML = lista.map(r => {
+        const yaListo = String(r.logistica || "").toUpperCase().indexOf("ENTREGADO") !== -1;
+        return `
+          <div style="border:1px solid #cbd5e1; border-left:5px solid ${yaListo ? '#059669' : '#d97706'}; border-radius:8px; padding:16px; margin-bottom:12px; background:#fff;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <strong style="font-size:15px; color:var(--navy);">${r.salon} | Fecha: ${r.fechaUso} (${r.horaInicio} a ${r.horaFin})</strong>
+              <span class="badge ${yaListo ? 'badge-success' : 'badge-warning'}">${r.logistica}</span>
+            </div>
+            <div style="margin:8px 0; font-size:13.5px; color:#334155;">
+              <b>Unidad Solicitante:</b> ${r.departamento} (${r.solicitante}) — <b>Asistentes:</b> ${r.personas} personas
+            </div>
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px; border-radius:6px; font-size:13.5px; margin-bottom:10px;">
+              <div><b>Mobiliario requerido:</b> ${r.mobiliario}</div>
+              <div style="margin-top:4px;"><b>Equipo técnico:</b> ${r.equipo}</div>
+            </div>
+            ${!yaListo ? `
+              <button class="btn btn-success btn-sm" onclick="confirmarMontajeDesdeVistaLogistica('${r.id}')">
+                Confirmar Instalación de Mobiliario y Equipo
+              </button>
+            ` : ''}
+          </div>
+        `;
+      }).join("");
+    }
+
+    function confirmarMontajeDesdeVistaLogistica(idReserva) {
+      if (!TOKEN_SESION_ACTUAL) return;
+      callServer("confirmarEntregaLogistica", [idReserva], function(r) {
+        alert(r.mensaje);
+        cargarVistaLogistica();
+      });
+    }
+
+    // ========================================================================
+    // CALENDARIO VISUAL PÚBLICO PRIVADO (ZERO INFORMATION LEAK)
+    // ========================================================================
+    function abrirCalendarioPublicoModal() {
+      document.getElementById("modalCalendarioPublico").style.display = "flex";
+      document.getElementById("calPubDetalleDia").classList.add("hidden");
+      callServer("obtenerCalendarioPublico", [], function(lista) {
+        RESERVAS_PUBLICAS_CACHE = lista || [];
+        renderizarCalendarioPublico();
+      });
+    }
+    function cerrarCalendarioPublicoModal() { document.getElementById("modalCalendarioPublico").style.display = "none"; }
+    function cambiarMesCalendarioPublico(delta) {
+      CAL_PUB_MES += delta;
+      if (CAL_PUB_MES < 0) { CAL_PUB_MES = 11; CAL_PUB_ANIO--; }
+      if (CAL_PUB_MES > 11) { CAL_PUB_MES = 0; CAL_PUB_ANIO++; }
+      renderizarCalendarioPublico();
+    }
+    function renderizarCalendarioPublico() {
+      const nombresMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+      document.getElementById("calPubTituloMes").innerText = `${nombresMeses[CAL_PUB_MES]} ${CAL_PUB_ANIO}`;
+
+      const filtroSalon = document.getElementById("calPubFiltroSalon").value;
+      const primerDia = new Date(CAL_PUB_ANIO, CAL_PUB_MES, 1).getDay();
+      const diasEnMes = new Date(CAL_PUB_ANIO, CAL_PUB_MES + 1, 0).getDate();
+      const hoyISO = new Date().toISOString().split("T")[0];
+
+      const grid = document.getElementById("calPubGridDias");
+      let html = "";
+      for (let i = 0; i < primerDia; i++) html += `<div class="cal-cell empty"></div>`;
+
+      for (let dia = 1; dia <= diasEnMes; dia++) {
+        const fechaISO = `${CAL_PUB_ANIO}-${String(CAL_PUB_MES + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+        const reservasDia = RESERVAS_PUBLICAS_CACHE.filter(r => {
+          return r.fechaUso === fechaISO && (filtroSalon === "TODOS" || r.salon === filtroSalon);
+        }).sort((a, b) => a.horaInicio.localeCompare(b.horaInicio));
+
+        const maxVisible = 3;
+        const visibles = reservasDia.slice(0, maxVisible);
+        const ocultas = reservasDia.length - maxVisible;
+
+        const badgesHtml = visibles.map(r => {
+          const color = r.estado === "APROBADA" ? "#dc2626" : "#d97706";
+          const abrevSalon = r.salon.substring(0, 7);
+          return `<div class="cal-badge" style="background:${color};">${r.horaInicio}-${r.horaFin} | ${abrevSalon}</div>`;
+        }).join("");
+
+        const masHtml = ocultas > 0 ? `<div class="cal-more">+${ocultas} más</div>` : "";
+        const claseHoy = fechaISO === hoyISO ? "today" : "";
+
+        html += `
+          <div class="cal-cell ${claseHoy}" onclick="mostrarDetalleDiaPublico('${fechaISO}')">
+            <div class="cal-num">
+              <span>${dia}</span>
+              ${reservasDia.length === 0 ? `<span style="font-size:10px; color:var(--success);">Libre</span>` : `<span style="font-size:10px; background:#fee2e2; color:#dc2626; padding:1px 5px; border-radius:8px;">${reservasDia.length}</span>`}
+            </div>
+            ${badgesHtml}
+            ${masHtml}
+          </div>
+        `;
+      }
+      grid.innerHTML = html;
+    }
+
+    function mostrarDetalleDiaPublico(fechaISO) {
+      const caja = document.getElementById("calPubDetalleDia");
+      caja.classList.remove("hidden");
+      const lista = RESERVAS_PUBLICAS_CACHE.filter(r => r.fechaUso === fechaISO)
+        .sort((a, b) => a.horaInicio.localeCompare(b.horaInicio));
+
+      let html = `
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+          <strong style="color:var(--navy);">Bloques ocupados el ${fechaISO}:</strong>
+          <button type="button" class="btn btn-success btn-sm" onclick="elegirFechaDesdeCalendarioPublico('${fechaISO}')">
+            Seleccionar esta fecha (${fechaISO})
+          </button>
+        </div>
+      `;
+      if (lista.length === 0) {
+        html += `<div style="color:var(--success); font-weight:600; font-size:13px;">Todos los salones se encuentran disponibles en esta fecha.</div>`;
+      } else {
+        html += lista.map(r => `
+          <div style="padding:8px 10px; background:white; border:1px solid #e2e8f0; border-radius:6px; margin-bottom:6px; font-size:13px;">
+            <b>${r.salon}:</b> Ocupado de <b>${r.horaInicio} a ${r.horaFin}</b> (+transición hasta ${r.horaFinConColchon}) <span class="badge ${r.estado === 'APROBADA' ? 'badge-danger' : 'badge-warning'}">${r.estado === 'APROBADA' ? 'RESERVADO' : 'EN REVISIÓN'}</span>
+          </div>
+        `).join("");
+      }
+      caja.innerHTML = html;
+      caja.scrollIntoView({ behavior: "smooth" });
+    }
+
+    function elegirFechaDesdeCalendarioPublico(fechaISO) {
+      document.getElementById("fechaUso").value = fechaISO;
+      cerrarCalendarioPublicoModal();
+      consultarHorariosFecha();
+    }
+
+    // SOPORTE TÉCNICO PÚBLICO
+    function renderizarBotonesSoportePublico() {
+      const cont = document.getElementById("contenedorContactosSoporte");
+      if (!SOPORTE_PUBLICO.length) {
+        cont.innerHTML = `<span style="color:#64748b;">Utilice el botón "Enviar Solicitud de Soporte" para comunicarse con Administración.</span>`;
+        return;
+      }
+      cont.innerHTML = SOPORTE_PUBLICO.map(s => {
+        const numLimpio = String(s.telefono || "").replace(/[^0-9]/g, "");
+        const msgWa = encodeURIComponent("Solicitud de asistencia técnica — Sistema de Reserva de Salones.");
+        return `
+          <div style="background:white; border:1px solid #cbd5e1; padding:8px 14px; border-radius:6px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <strong style="color:var(--navy);">${s.nombre}:</strong>
+            ${numLimpio ? `
+              <a href="tel:+${numLimpio}" target="_top" class="btn btn-outline btn-sm">Llamar</a>
+              <a href="https://wa.me/${numLimpio}?text=${msgWa}" target="_blank" class="btn btn-success btn-sm">WhatsApp</a>
+            ` : ''}
+            ${s.correo ? `
+              <a href="mailto:${s.correo}?subject=Soporte%20Salones" target="_blank" class="btn btn-outline btn-sm">Correo</a>
+            ` : ''}
+          </div>
+        `;
+      }).join("");
+    }
+
+    function abrirModalReporteSoporte() { document.getElementById("modalSoporteReporte").style.display = "flex"; }
+    function cerrarModalReporteSoporte() { document.getElementById("modalSoporteReporte").style.display = "none"; }
+    function enviarMensajeSoporte() {
+      const nom = document.getElementById("repSopNombre").value.trim();
+      const con = document.getElementById("repSopContacto").value.trim();
+      const msj = document.getElementById("repSopMensaje").value.trim();
+      if (!nom || !con || !msj) return alert("Complete todos los campos del reporte.");
+      cerrarModalReporteSoporte();
+      callServer("enviarReporteSoporte", [{ nombre: nom, contacto: con, mensaje: msj }], function(r) {
+        alert(r.mensaje);
+        document.getElementById("repSopMensaje").value = "";
+      });
+    }
+
+    // BUSCADOR DE PROGRAMAS
+    function abrirDesplegableDeptos() { filtrarDesplegableDeptos(); document.getElementById("listaDeptos").style.display = "block"; }
+    function filtrarDesplegableDeptos() {
+      const q = document.getElementById("buscadorDepto").value.toLowerCase();
+      const filtrados = DEPTOS_PUBLICOS.filter(d => d.nombre.toLowerCase().includes(q) || d.categoria.toLowerCase().includes(q));
+      pintarOpcionesDeptos(filtrados);
+    }
+    function pintarOpcionesDeptos(lista) {
+      const cont = document.getElementById("listaDeptos");
+      if (!lista.length) {
+        cont.innerHTML = `<div class="dropdown-item" style="color:#64748b;">Sin coincidencias</div>`;
+        return;
+      }
+      cont.innerHTML = lista.map(d => `
+        <div class="dropdown-item" onclick="seleccionarDepto('${d.nombre.replace(/'/g, "\\'")}')">
+          <span>${d.nombre}</span><span class="cat-tag">${d.categoria}</span>
+        </div>
+      `).join("");
+    }
+    function seleccionarDepto(nombre) {
+      document.getElementById("buscadorDepto").value = nombre;
+      document.getElementById("listaDeptos").style.display = "none";
+    }
+
+    // Consulta de disponibilidad privada (sin revelar nombres ni departamentos)
+    function consultarHorariosFecha() {
+      const salon = document.getElementById("salonSelect").value;
+      const fecha = document.getElementById("fechaUso").value;
+      if (!salon || !fecha) return;
+
+      const visor = document.getElementById("visorOcupacion");
+      const sug = document.getElementById("visorSugerencias");
+      visor.innerHTML = "Verificando disponibilidad...";
+      sug.innerHTML = "";
+
+      callServer("obtenerOcupacionYSugerencias", [salon, fecha, ID_REPROGRAMAR_URL], function(res) {
+        if (!res || !res.ocupados || res.ocupados.length === 0) {
+          visor.innerHTML = `<span class="badge badge-success">Salón disponible durante toda la jornada</span>`;
+        } else {
+          visor.innerHTML = res.ocupados.map(o => `
+            <span class="badge ${o.estado === 'APROBADA' ? 'badge-danger' : 'badge-warning'}">
+              ${o.estado === 'APROBADA' ? 'Reservado' : 'En Revisión'}: ${o.horaInicio} a ${o.horaFin} (+transición ${o.horaFinConColchon})
+            </span>
+          `).join("");
+          if (res.sugerenciasLibres && res.sugerenciasLibres.length > 0) {
+            sug.innerHTML = `Bloques disponibles sugeridos: ` + res.sugerenciasLibres.join(" | ");
+          }
+        }
+      });
+    }
+
+    function agregarFilaEnlace() {
+      const div = document.createElement("div");
+      div.style.cssText = "display:flex; gap:8px; margin-bottom:6px;";
+      div.innerHTML = `
+        <input type="text" class="enlace-titulo" placeholder="Título del recurso" style="width:38%; margin:0;">
+        <input type="url" class="enlace-url" placeholder="https://..." style="width:62%; margin:0;">
+      `;
+      document.getElementById("contenedorEnlaces").appendChild(div);
+    }
+
+    // EXPLORADOR DE CARPETA COMPARTIDA DRIVE
+    function abrirExploradorDrive(modo) {
+      MODO_EXPLORADOR_ACTUAL = modo;
+      document.getElementById("modalDrive").style.display = "flex";
+      document.getElementById("buscadorArchivosDrive").value = "";
+      cargarCarpetaDrive("");
+    }
+    function cerrarExploradorDrive() { document.getElementById("modalDrive").style.display = "none"; }
+    function cargarCarpetaDrive(folderId) {
+      const estado = document.getElementById("driveEstadoCarga");
+      estado.classList.remove("hidden");
+      estado.innerText = "Consultando directorio en Google Drive...";
+      document.getElementById("contenedorSubcarpetasDrive").innerHTML = "";
+      document.getElementById("contenedorArchivosDrive").innerHTML = "";
+
+      callServer("explorarCarpetaDrive", [folderId], function(res) {
+        if (!res.exito) {
+          estado.innerText = res.mensaje;
+          return;
+        }
+        estado.classList.add("hidden");
+        document.getElementById("driveRutaActual").innerText = "Directorio: " + res.nombreCarpeta;
+        document.getElementById("btnVolverRaizDrive").classList.toggle("hidden", res.esRaiz);
+        CACHE_EXPLORADOR_DRIVE = { subcarpetas: res.subcarpetas || [], archivos: res.archivos || [] };
+        filtrarElementosDrive();
+      });
+    }
+
+    function filtrarElementosDrive() {
+      const q = document.getElementById("buscadorArchivosDrive").value.toLowerCase();
+      const contCarpetas = document.getElementById("contenedorSubcarpetasDrive");
+      const contArchivos = document.getElementById("contenedorArchivosDrive");
+
+      const carpetasFiltradas = CACHE_EXPLORADOR_DRIVE.subcarpetas.filter(c => c.nombre.toLowerCase().includes(q));
+      const archivosFiltrados = CACHE_EXPLORADOR_DRIVE.archivos.filter(a => a.nombre.toLowerCase().includes(q));
+
+      contCarpetas.innerHTML = carpetasFiltradas.length > 0 ? `<div style="font-size:12px; font-weight:700; color:#475569; margin-bottom:6px;">Subcarpetas de Unidades y Programas:</div>
+        <div class="folder-grid">` + carpetasFiltradas.map(c => `
+          <div class="folder-item" onclick="cargarCarpetaDrive('${c.id}')">
+            <span>📁 ${c.nombre}</span>
+          </div>
+        `).join("") + `</div>` : "";
+
+      contArchivos.innerHTML = archivosFiltrados.length > 0 ? `<div style="font-size:12px; font-weight:700; color:#475569; margin-bottom:6px;">Documentos Disponibles:</div>
+        <div class="folder-grid">` + archivosFiltrados.map(a => `
+          <div class="file-item" onclick="accionSobreArchivoDrive('${a.id}', '${a.nombre.replace(/'/g, "\\'")}', '${a.urlPreview}')">
+            <div style="overflow:hidden; text-overflow:ellipsis;">
+              <div>📄 ${a.nombre}</div>
+              <small style="color:var(--primary);">${MODO_EXPLORADOR_ACTUAL === 'SELECCIONAR' ? '+ Vincular a solicitud' : 'Abrir en Visor'}</small>
+            </div>
+          </div>
+        `).join("") + `</div>` : (carpetasFiltradas.length === 0 ? `<p style="color:#64748b; text-align:center;">Sin elementos coincidentes.</p>` : "");
+    }
+
+    function accionSobreArchivoDrive(id, nombre, urlPreview) {
+      if (MODO_EXPLORADOR_ACTUAL === "SELECCIONAR") {
+        if (!ARCHIVOS_DRIVE_SELECCIONADOS.some(x => x.id === id)) {
+          ARCHIVOS_DRIVE_SELECCIONADOS.push({ id: id, nombre: nombre, urlPreview: urlPreview });
+        }
+        pintarArchivosSeleccionadosForm();
+        cerrarExploradorDrive();
+      } else {
+        cerrarExploradorDrive();
+        proyectarArchivoConPermiso(id, nombre, urlPreview);
+      }
+    }
+
+    function proyectarArchivoConPermiso(id, nombre, urlFallback) {
+      resetZoomVisor();
+      document.getElementById("tituloPresentacion").innerText = "Cargando documento: " + nombre + "...";
+      document.getElementById("modalPresentacion").style.display = "flex";
+
+      if (!id) {
+        document.getElementById("tituloPresentacion").innerText = nombre;
+        document.getElementById("iframePresentacion").src = urlFallback;
+        return;
+      }
+      callServer("prepararArchivoParaProyeccion", [id], function(res) {
+        const finalUrl = res.urlPreview || urlFallback;
+        document.getElementById("tituloPresentacion").innerText = nombre;
+        document.getElementById("iframePresentacion").src = finalUrl;
+      });
+    }
+
+    function pintarArchivosSeleccionadosForm() {
+      document.getElementById("listaArchivosSeleccionados").innerHTML = ARCHIVOS_DRIVE_SELECCIONADOS.map((a, idx) => `
+        <span class="badge badge-neutral" style="padding:6px 10px;">
+          ${a.nombre} <b style="cursor:pointer; margin-left:6px; color:var(--danger);" onclick="quitarArchivoSeleccionado(${idx})">✖</b>
+        </span>
+      `).join("");
+    }
+    function quitarArchivoSeleccionado(idx) {
+      ARCHIVOS_DRIVE_SELECCIONADOS.splice(idx, 1);
+      pintarArchivosSeleccionadosForm();
+    }
+
+    // Validación silenciosa del correo institucional (sin revelar el dominio requerido en el mensaje de error)
+    function esCorreoAutorizadoCliente(correo) {
+      if (!correo) return false;
+      const regex = /^[a-z0-9._%+-]+@wuqukawoq\.org$/i;
+      return regex.test(String(correo).trim());
+    }
+
+    function enviarFormularioReserva() {
+      const salon = document.getElementById("salonSelect").value;
+      const depto = document.getElementById("buscadorDepto").value.trim();
+      const fecha = document.getElementById("fechaUso").value;
+      const hIni = document.getElementById("horaInicio").value;
+      const hFin = document.getElementById("horaFin").value;
+      const nombre = document.getElementById("nombreSolicitante").value.trim();
+      const correo = document.getElementById("correoSolicitante").value.trim();
+      const motivo = document.getElementById("motivoReunion").value.trim();
+      const personas = document.getElementById("cantidadPersonas").value;
+
+      if (!salon || !depto || !fecha || !hIni || !hFin || !nombre || !correo || !personas) {
+        alert("Por favor complete todos los campos obligatorios marcados con (*).");
+        return;
+      }
+
+      if (!esCorreoAutorizadoCliente(correo)) {
+        alert("Dirección de correo electrónico no autorizada para el registro de espacios.");
+        document.getElementById("correoSolicitante").focus();
+        return;
+      }
+
+      const btn = document.getElementById("btnEnviarReserva");
+      const txtOriginal = btn.innerText;
+      btn.disabled = true;
+      btn.innerText = "Procesando registro...";
+
+      const titulos = document.querySelectorAll(".enlace-titulo");
+      const urls = document.querySelectorAll(".enlace-url");
+      const enlaces = [];
+      for (let i = 0; i < urls.length; i++) {
+        if (urls[i].value.trim()) {
+          enlaces.push({ titulo: titulos[i].value.trim() || `Recurso ${i + 1}`, url: urls[i].value.trim() });
+        }
+      }
+
+      const payload = {
+        idReprogramar: ID_REPROGRAMAR_URL,
+        tokenReprogramar: TOKEN_REPROGRAMAR_URL,
+        salon: salon, departamento: depto, fechaUso: fecha,
+        horaInicio: hIni, horaFin: hFin, nombreSolicitante: nombre,
+        correoSolicitante: correo, motivoReunion: motivo, cantidadPersonas: personas,
+        mobiliario: document.getElementById("mobiliario").value.trim(),
+        equipoTecnico: document.getElementById("equipoTecnico").value.trim(),
+        archivos: ARCHIVOS_DRIVE_SELECCIONADOS,
+        enlaces: enlaces
+      };
+
+      callServer("crearSolicitudReserva", [payload], function(resp) {
+        btn.disabled = false;
+        btn.innerText = txtOriginal;
+        alert(resp.mensaje);
+        if (resp.exito) {
+          ARCHIVOS_DRIVE_SELECCIONADOS = [];
+          pintarArchivosSeleccionadosForm();
+          document.getElementById("motivoReunion").value = "";
+          document.getElementById("mobiliario").value = "";
+          document.getElementById("equipoTecnico").value = "";
+          consultarHorariosFecha();
+        }
+      });
+    }
+
+    // ========================================================================
+    // MODO KIOSCO (TABLET EN SALÓN — SINCRONIZACIÓN CADA 6 SEGUNDOS)
+    // ========================================================================
+    function actualizarKiosco() {
+      const selector = document.getElementById("kioscoSelectorSalon");
+      const salonElegido = SALON_PARAM_SERVIDOR || (selector ? selector.value : "");
+      if (!salonElegido) return;
+
+      callServer("consultarEstadoKiosco", [salonElegido], function(info) {
+        if (!info) return;
+        document.getElementById("kioscoTituloSalon").innerText = info.salon;
+        const hero = document.getElementById("kioscoHero");
+        const badge = document.getElementById("kioscoBadgeEstado");
+        const detalle = document.getElementById("kioscoInfoEvento");
+        const alertaTiempo = document.getElementById("kioscoAlertaTiempo");
+        const areaBotones = document.getElementById("kioscoBotonesMaterial");
+        const cajaFin = document.getElementById("kioscoCajaFinalizar");
+
+        if (info.estadoSalon === "MANTENIMIENTO") {
+          ID_RESERVA_KIOSCO = null;
+          cerrarPresentacion();
+          alertaTiempo.classList.add("hidden");
+          hero.className = "kiosco-hero bg-mantenimiento";
+          badge.innerText = "SALÓN EN MANTENIMIENTO";
+          const listaAlt = (info.salonesAlternativos && info.salonesAlternativos.length > 0)
+            ? info.salonesAlternativos.map(s => `<div style="background:rgba(15,23,42,0.75); color:#fff; padding:8px 14px; border-radius:6px; margin:6px auto; max-width:520px; font-weight:600;">Espacio Habilitado: ${s}</div>`).join("")
+            : `<div>Consulte disponibilidad con Administración.</div>`;
+          detalle.innerHTML = `<div style="font-weight:600; margin-bottom:10px;">Este espacio se encuentra temporalmente fuera de servicio. Espacios alternativos:</div>` + listaAlt;
+          areaBotones.innerHTML = "";
+          cajaFin.classList.add("hidden");
+          document.getElementById("kioscoListaProximas").innerHTML = "Salón fuera de servicio por mantenimiento.";
+          return;
+        }
+
+        if (info.estadoSalon === "OCUPADO" && info.reunionActual) {
+          const r = info.reunionActual;
+          ID_RESERVA_KIOSCO = r.idReserva;
+          hero.className = "kiosco-hero bg-ocupado";
+          badge.innerText = "SESIÓN EN CURSO";
+          detalle.innerHTML = `
+            <div style="font-size:26px; font-weight:800; margin-bottom:4px;">${r.departamento}</div>
+            <div><b>Actividad:</b> ${r.motivo} | <b>Responsable:</b> ${r.solicitante}</div>
+            <div><b>Horario asignado:</b> ${r.horaInicio} a ${r.horaFin} (Tiempo restante: <b>${r.minutosRestantes} min</b>)</div>
+          `;
+
+          if (r.minutosRestantes <= 10) {
+            alertaTiempo.classList.remove("hidden");
+            alertaTiempo.innerHTML = `Aviso: Restan ${r.minutosRestantes} minuto(s) para concluir el horario asignado (${r.horaFin}). Si requiere extender la sesión, utilice el botón inferior.`;
+          } else {
+            alertaTiempo.classList.add("hidden");
+          }
+
+          let btns = `<button class="btn-launch" onclick="abrirExploradorDrive('KIOSCO')">Explorar Repositorio de Documentos</button>`;
+          (r.archivos || []).forEach(a => {
+            btns += `<button class="btn-launch" onclick="proyectarArchivoConPermiso('${a.id || ''}', '${a.nombre.replace(/'/g, "\\'")}', '${a.urlPreview}')">Abrir Documento: ${a.nombre}</button>`;
+          });
+          (r.enlaces || []).forEach(l => {
+            btns += `<button class="btn-launch" onclick="proyectarArchivoConPermiso('', '${l.titulo.replace(/'/g, "\\'")}', '${l.url}')">Abrir Enlace: ${l.titulo}</button>`;
+          });
+          areaBotones.innerHTML = btns;
+          cajaFin.classList.remove("hidden");
+        } else {
+          ID_RESERVA_KIOSCO = null;
+          cerrarPresentacion();
+          cerrarExploradorDrive();
+          cerrarModalExtensionKiosco();
+          alertaTiempo.classList.add("hidden");
+          hero.className = "kiosco-hero bg-disponible";
+          badge.innerText = "SALÓN DISPONIBLE";
+          if (info.proximaInmediata) {
+            const p = info.proximaInmediata;
+            detalle.innerHTML = `Próxima sesión programada hoy: <b>${p.horaInicio} a ${p.horaFin}</b> — ${p.departamento}`;
+          } else {
+            detalle.innerHTML = `Espacio disponible sin sesiones próximas programadas para hoy.`;
+          }
+          areaBotones.innerHTML = "";
+          cajaFin.classList.add("hidden");
+        }
+
+        const listaProx = document.getElementById("kioscoListaProximas");
+        if (!info.proximasHoy || info.proximasHoy.length === 0) {
+          listaProx.innerHTML = `<span style="color:#94a3b8;">No existen más sesiones programadas para el resto del día en este salón.</span>`;
+        } else {
+          listaProx.innerHTML = info.proximasHoy.map(p => `
+            <div style="padding:10px; border-bottom:1px solid #334155; display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+              <span><b>${p.horaInicio} - ${p.horaFin}</b> | <b>${p.departamento}</b></span>
+              <span style="color:#94a3b8;">${p.motivo}</span>
+            </div>
+          `).join("");
+        }
+      });
+    }
+
+    function abrirModalExtensionKiosco() {
+      if (!ID_RESERVA_KIOSCO) return;
+      document.getElementById("cajaRespuestaExtension").classList.add("hidden");
+      document.getElementById("modalExtensionKiosco").style.display = "flex";
+    }
+    function cerrarModalExtensionKiosco() { document.getElementById("modalExtensionKiosco").style.display = "none"; }
+
+    function procesarSolicitudExtensionKiosco(minutos, confirmarParcial) {
+      if (!ID_RESERVA_KIOSCO) return;
+      const caja = document.getElementById("cajaRespuestaExtension");
+      caja.classList.remove("hidden");
+      caja.innerHTML = "Verificando disponibilidad del salón...";
+
+      callServer("solicitarExtensionTiempoKiosco", [ID_RESERVA_KIOSCO, minutos, confirmarParcial], function(res) {
+        if (res.exito) {
+          alert(res.mensaje);
+          cerrarModalExtensionKiosco();
+          actualizarKiosco();
+        } else if (res.sugerirParcial) {
+          caja.innerHTML = `
+            <p style="margin:0 0 12px 0; font-weight:600; color:#92400e;">${res.mensaje}</p>
+            <div style="display:flex; justify-content:center; gap:10px;">
+              <button class="btn btn-success btn-sm" onclick="procesarSolicitudExtensionKiosco(${res.minutosDisponibles}, true)">
+                Confirmar +${res.minutosDisponibles} min
+              </button>
+              <button class="btn btn-outline btn-sm" onclick="cerrarModalExtensionKiosco()">
+                Mantener horario actual
+              </button>
+            </div>
+          `;
+        } else {
+          caja.innerHTML = `<p style="margin:0; font-weight:600; color:var(--danger);">${res.mensaje}</p>`;
+        }
+      });
+    }
+
+    function cerrarPresentacion() {
+      document.getElementById("modalPresentacion").style.display = "none";
+      document.getElementById("iframePresentacion").src = "";
+    }
+
+    function liberarSalonKiosco() {
+      if (!ID_RESERVA_KIOSCO) return;
+      if (!confirm("¿Confirma que la sesión ha concluido? El salón pasará a estado DISPONIBLE inmediatamente.")) return;
+      callServer("finalizarReunionAnticipada", [ID_RESERVA_KIOSCO], function(r) {
+        alert(r.mensaje);
+        actualizarKiosco();
+      });
+    }
+    function togglePantallaCompleta() {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+      else document.exitFullscreen().catch(() => {});
+    }
+
+    // ========================================================================
+    // PANEL DEL ADMINISTRADOR CON SESIÓN POR TOKEN CRIPTOGRÁFICO
+    // ========================================================================
+    function verificarSesionAdminActiva() {
+      if (!ADMIN_LOGUEADO || !DATOS_ADMIN_CACHE || !TOKEN_SESION_ACTUAL) {
+        alert("Sesión requerida: Por favor ingrese su PIN de Administrador.");
+        document.getElementById("dashboardAdmin").classList.add("hidden");
+        document.getElementById("cardLoginAdmin").classList.remove("hidden");
+        return false;
+      }
+      return true;
+    }
+
+    function loginAdmin() {
+      const pin = document.getElementById("pinAdminInput").value.trim();
+      if (!pin) return;
+      callServer("autenticarAdminPorPin", [pin], function(res) {
+        if (!res.exito) return alert(res.mensaje);
+        TOKEN_SESION_ACTUAL = res.token;
+        ADMIN_LOGUEADO = res.admin;
+        CONFIG_ADMIN_CARGADA_INICIAL = false;
+        document.getElementById("pinAdminInput").value = "";
+        document.getElementById("lblNombreAdmin").innerText = ADMIN_LOGUEADO.nombre + " (" + ADMIN_LOGUEADO.rol + ")";
+        document.getElementById("cardLoginAdmin").classList.add("hidden");
+        document.getElementById("dashboardAdmin").classList.remove("hidden");
+        cargarCacheAdminCompleta(res.datosPanel, true);
+      });
+    }
+
+    function cerrarSesionAdmin() {
+      const tk = TOKEN_SESION_ACTUAL;
+      ADMIN_LOGUEADO = null;
+      LOGISTICA_LOGUEADO = null;
+      DATOS_ADMIN_CACHE = null;
+      TOKEN_SESION_ACTUAL = "";
+      CONFIG_ADMIN_CARGADA_INICIAL = false;
+      document.getElementById("pinAdminInput").value = "";
+      document.getElementById("dashboardAdmin").classList.add("hidden");
+      document.getElementById("cardLoginAdmin").classList.remove("hidden");
+      if (tk) callServer("cerrarSesionSegura", []);
+    }
+
+    function abrirSubmenuAdmin(num) {
+      for (let i = 1; i <= 6; i++) {
+        document.getElementById("subMenu" + i).classList.toggle("hidden", i !== num);
+        document.getElementById("btnSub" + i).classList.toggle("active", i === num);
+      }
+      if (num === 2) renderizarTablaHistorialAdmin();
+      if (num === 3) renderizarCalendarioMensual();
+      if (num === 6) renderizarBotonesDescargaDinamicos();
+    }
+
+    function sincronizarSoloSolicitudesAdmin() {
+      callServer("obtenerResumenSolicitudesAdmin", [], function(res) {
+        if (!res || !res.exito || !DATOS_ADMIN_CACHE) return;
+        DATOS_ADMIN_CACHE.reservas = res.reservas || [];
+        const pendientes = DATOS_ADMIN_CACHE.reservas.filter(r => r.estado === "PENDIENTE").length;
+        document.getElementById("contPendientes").innerText = pendientes;
+        renderizarTablaReservasAdmin();
+        if (!document.getElementById("subMenu2").classList.contains("hidden")) renderizarTablaHistorialAdmin();
+        if (!document.getElementById("subMenu3").classList.contains("hidden")) renderizarCalendarioMensual();
+      });
+    }
+
+    function recargarDatosAdminSilencioso(forzarRecargaInputsConfig) {
+      callServer("obtenerDatosPanelAdmin", [], function(datos) {
+        cargarCacheAdminCompleta(datos, forzarRecargaInputsConfig === true);
+      });
+    }
+
+    function cargarCacheAdminCompleta(datos, llenarInputsConfig) {
+      if (!datos) return;
+      DATOS_ADMIN_CACHE = datos;
+
+      if (llenarInputsConfig || !CONFIG_ADMIN_CARGADA_INICIAL) {
+        CONFIG_ADMIN_CARGADA_INICIAL = true;
+        document.getElementById("cfgCarpetaDrive").value = datos.config["ID_Carpeta_Drive"] || "";
+        document.getElementById("cfgUrlPuente").value = datos.config["URL_Puente_Web"] || "";
+        document.getElementById("cfgHoraRecordatorio").value = datos.config["Hora_Recordatorio_Diario"] || "07:00";
+        document.getElementById("cfgMinutosAlertaPrevia").value = datos.config["Minutos_Alerta_Previa_Mobiliario"] || "30";
+        document.getElementById("cfgMensajeMobiliario").value = datos.config["Mensaje_Personalizado_Mobiliario"] || "";
+        document.getElementById("cfgModo").value = datos.config["Modo_Aprobacion"] || "MANUAL";
+        document.getElementById("cfgColchon").value = datos.config["Tiempo_Colchon_Minutos"] || "15";
+        document.getElementById("cfgCorreos").value = datos.config["Notificaciones_Activas"] || "SI";
+        document.getElementById("cfgNotificarCompaneros").value = datos.config["Notificar_Companeros_Logistica"] || "SI";
+        document.getElementById("cfgFooterDerechos").value = datos.config["Footer_Derechos"] || "Todos los derechos reservados — Sistema Institucional de Gestión de Espacios";
+        document.getElementById("cfgFooterCreador").value = datos.config["Footer_Creador"] || "Departamento de Informática y Sistemas";
+
+        actualizarTextosFooter(document.getElementById("cfgFooterDerechos").value, document.getElementById("cfgFooterCreador").value);
+      }
+
+      const pendientes = (datos.reservas || []).filter(r => r.estado === "PENDIENTE").length;
+      document.getElementById("contPendientes").innerText = pendientes;
+
+      renderizarTablaReservasAdmin();
+      renderizarTablaHistorialAdmin();
+      renderizarCalendarioMensual();
+      renderizarTablaDeptosAdmin();
+      renderizarTablaSalonesAdmin();
+      renderizarTablaPersonalLogisticaAdmin();
+      renderizarTablaAdmins();
+      renderizarTablaSoporteAdmin();
+      renderizarBotonesDescargaDinamicos();
+    }
+
+    function renderizarBotonesDescargaDinamicos() {
+      if (!DATOS_ADMIN_CACHE) return;
+      const cont = document.getElementById("contenedorBotonesDescarga");
+      let html = `
+        <button class="btn btn-navy" onclick="descargarAppAutonomaLimpiaServidor('RESERVA', '', '1_App_General_y_Admin.html')">
+          1. App General (Formulario + Admin + Correos)
+        </button>
+      `;
+
+      const listaSalones = DATOS_ADMIN_CACHE.salones || [];
+      listaSalones.forEach((s, idx) => {
+        const numArchivo = idx + 2;
+        const nombreLimpio = s.nombre.replace(/[^a-zA-Z0-9]/g, "_").replace(/_+/g, "_").replace(/^_|_$/g, "");
+        const nombreArchivo = `${numArchivo}_Tablet_${nombreLimpio}.html`;
+        html += `
+          <button class="btn btn-success" onclick="descargarAppAutonomaLimpiaServidor('KIOSCO', '${s.id}', '${nombreArchivo}')">
+            ${numArchivo}. App Tablet: ${s.nombre} (${s.id})
+          </button>
+        `;
+      });
+
+      const numMob = listaSalones.length + 2;
+      html += `
+        <button class="btn btn-outline" onclick="descargarAppAutonomaLimpiaServidor('LOGISTICA', '', '${numMob}_App_Personal_Mobiliario.html')">
+          ${numMob}. App Personal de Mobiliario
+        </button>
+      `;
+      cont.innerHTML = html;
+    }
+
+    function renderizarTablaReservasAdmin() {
+      if (!DATOS_ADMIN_CACHE) return;
+      const filtro = document.getElementById("filtroEstadoAdmin").value;
+      const filtradas = (DATOS_ADMIN_CACHE.reservas || []).filter(r => {
+        if (filtro === "TODAS") return true;
+        return r.estado === filtro;
+      });
+
+      const ultimas10 = filtradas.slice(0, 10);
+      const tbody = document.getElementById("tbodyReservasAdmin");
+      if (ultimas10.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b; padding:20px;">No existen solicitudes en este filtro.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = ultimas10.map(r => construirFilaReservaHtml(r)).join("");
+    }
+
+    function obtenerListaHistorialFiltrada() {
+      if (!DATOS_ADMIN_CACHE) return [];
+      const q = (document.getElementById("histBuscarTexto").value || "").toLowerCase().trim();
+      const salon = document.getElementById("histFiltroSalon").value;
+      const estado = document.getElementById("histFiltroEstado").value;
+      const fecha = document.getElementById("histFiltroFecha").value;
+
+      return (DATOS_ADMIN_CACHE.reservas || []).filter(r => {
+        if (salon !== "TODOS" && r.salon !== salon) return false;
+        if (estado !== "TODOS") {
+          if (estado === "RECHAZADA" && r.estado !== "RECHAZADA" && r.estado !== "CANCELADA") return false;
+          else if (estado !== "RECHAZADA" && r.estado !== estado) return false;
+        }
+        if (fecha && r.fechaUso !== fecha) return false;
+        if (q) {
+          const textoFila = `${r.id} ${r.salon} ${r.departamento} ${r.solicitante} ${r.correo} ${r.motivo}`.toLowerCase();
+          if (textoFila.indexOf(q) === -1) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderizarTablaHistorialAdmin() {
+      const lista = obtenerListaHistorialFiltrada();
+      document.getElementById("lblConteoHistorial").innerText = `Mostrando ${lista.length} registro(s) en el historial`;
+      const tbody = document.getElementById("tbodyHistorialAdmin");
+      if (lista.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b; padding:20px;">Sin registros coincidentes con los criterios de búsqueda.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = lista.map(r => construirFilaReservaHtml(r)).join("");
+    }
+
+    function limpiarFiltrosHistorial() {
+      document.getElementById("histBuscarTexto").value = "";
+      document.getElementById("histFiltroSalon").value = "TODOS";
+      document.getElementById("histFiltroEstado").value = "TODOS";
+      document.getElementById("histFiltroFecha").value = "";
+      renderizarTablaHistorialAdmin();
+    }
+
+    function exportarHistorialCSV() {
+      if (!verificarSesionAdminActiva()) return;
+      const lista = obtenerListaHistorialFiltrada();
+      if (lista.length === 0) return alert("No hay registros en la vista actual para exportar.");
+
+      const encabezados = ["ID_Reserva", "Estado", "Salon", "Fecha_Uso", "Hora_Inicio", "Hora_Fin", "Unidad_Programa", "Solicitante", "Correo", "Personas", "Motivo", "Mobiliario", "Equipo_Tecnico", "Estado_Logistica", "Atendido_Por"];
+      const filasCsv = [encabezados.join(",")];
+
+      lista.forEach(r => {
+        const valores = [
+          r.id, r.estado, r.salon, r.fechaUso, r.horaInicio, r.horaFin,
+          r.departamento, r.solicitante, r.correo, r.personas,
+          r.motivo, r.mobiliario, r.equipo, r.logistica, r.atendidoPor || ""
+        ].map(v => `"${String(v || "").replace(/"/g, '""')}"`);
+        filasCsv.push(valores.join(","));
+      });
+
+      const contenido = "\uFEFF" + filasCsv.join("\n");
+      const blob = new Blob([contenido], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "Reporte_Historial_Salones_" + new Date().toISOString().split("T")[0] + ".csv";
+      a.click();
+    }
+
+    function construirFilaReservaHtml(r) {
+      const badgeClass = r.estado === "APROBADA" ? "badge-success" : (r.estado === "PENDIENTE" || r.estado === "REPROGRAMAR" ? "badge-warning" : "badge-danger");
+      const logEntregada = String(r.logistica || "").toUpperCase().indexOf("ENTREGADO") !== -1;
+
+      let btnAcciones = `<div style="display:flex; flex-direction:column; gap:5px;">`;
+      if (r.estado === "PENDIENTE") {
+        btnAcciones += `
+          <button class="btn btn-success btn-sm" onclick="procesarReservaAdmin('${r.id}', 'APROBADA')">Aprobar</button>
+          <button class="btn btn-danger btn-sm" onclick="procesarReservaAdmin('${r.id}', 'RECHAZADA')">Rechazar</button>
+        `;
+      }
+      if (r.estado === "APROBADA" && !logEntregada) {
+        btnAcciones += `<button class="btn btn-outline btn-sm" onclick="confirmarLogisticaDesdePanel('${r.id}')">Confirmar Montaje</button>`;
+      }
+      if (r.estado === "APROBADA" || r.estado === "PENDIENTE" || r.estado === "REPROGRAMAR") {
+        btnAcciones += `<button class="btn btn-outline btn-sm" onclick="abrirModalReprogramar('${r.id}', '${r.salon.replace(/'/g, "\\'")}', '${r.fechaUso}', '${r.horaInicio}', '${r.horaFin}')">Reprogramar</button>`;
+      }
+      btnAcciones += `</div>`;
+
+      return `
+        <tr>
+          <td>
+            <b>${r.id}</b><br>
+            <span class="badge ${badgeClass}">${r.estado}</span>
+            ${r.atendidoPor ? `<div style="font-size:11px; color:#64748b; margin-top:3px;">Por: ${r.atendidoPor}</div>` : ''}
+          </td>
+          <td><b>${r.salon}</b><br>${r.fechaUso}<br><b>${r.horaInicio} a ${r.horaFin}</b> (${r.personas} pers.)</td>
+          <td><b>${r.departamento}</b><br>${r.solicitante}<br><small style="color:#64748b;">${r.correo}</small></td>
+          <td>
+            <div><b>Actividad:</b> ${r.motivo}</div>
+            <div><b>Mobiliario:</b> ${r.mobiliario}</div>
+            <div><b>Equipo:</b> ${r.equipo}</div>
+            <div style="margin-top:4px;"><b>Montaje:</b> <span class="badge ${logEntregada ? 'badge-success' : 'badge-warning'}">${r.logistica}</span></div>
+          </td>
+          <td>${btnAcciones}</td>
+        </tr>
+      `;
+    }
+
+    function cambiarMesCalendario(delta) {
+      CAL_MES_ACTUAL += delta;
+      if (CAL_MES_ACTUAL < 0) { CAL_MES_ACTUAL = 11; CAL_ANIO_ACTUAL--; }
+      if (CAL_MES_ACTUAL > 11) { CAL_MES_ACTUAL = 0; CAL_ANIO_ACTUAL++; }
+      renderizarCalendarioMensual();
+    }
+
+    function renderizarCalendarioMensual() {
+      if (!DATOS_ADMIN_CACHE) return;
+      const nombresMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+      document.getElementById("calTituloMes").innerText = `${nombresMeses[CAL_MES_ACTUAL]} ${CAL_ANIO_ACTUAL}`;
+
+      const filtroSalon = document.getElementById("calFiltroSalon").value;
+      const primerDia = new Date(CAL_ANIO_ACTUAL, CAL_MES_ACTUAL, 1).getDay();
+      const diasEnMes = new Date(CAL_ANIO_ACTUAL, CAL_MES_ACTUAL + 1, 0).getDate();
+      const hoyISO = new Date().toISOString().split("T")[0];
+
+      const grid = document.getElementById("calGridDias");
+      let html = "";
+      for (let i = 0; i < primerDia; i++) html += `<div class="cal-cell empty"></div>`;
+
+      for (let dia = 1; dia <= diasEnMes; dia++) {
+        const fechaISO = `${CAL_ANIO_ACTUAL}-${String(CAL_MES_ACTUAL + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+        const reservasDia = (DATOS_ADMIN_CACHE.reservas || []).filter(r => {
+          const est = String(r.estado).toUpperCase();
+          const okEstado = (est === "APROBADA" || est === "PENDIENTE" || est === "REPROGRAMAR");
+          const okSalon = (filtroSalon === "TODOS" || r.salon === filtroSalon);
+          return r.fechaUso === fechaISO && okEstado && okSalon;
+        }).sort((a, b) => a.horaInicio.localeCompare(b.horaInicio));
+
+        const maxVisible = 3;
+        const visibles = reservasDia.slice(0, maxVisible);
+        const ocultas = reservasDia.length - maxVisible;
+
+        const badgesHtml = visibles.map(r => {
+          const color = r.estado === "APROBADA" ? "#059669" : "#d97706";
+          const abrevSalon = r.salon.substring(0, 7);
+          return `<div class="cal-badge" style="background:${color};" title="${r.departamento}">${r.horaInicio}-${r.horaFin} | ${abrevSalon}</div>`;
+        }).join("");
+
+        const masHtml = ocultas > 0 ? `<div class="cal-more">+${ocultas} más</div>` : "";
+        const claseHoy = fechaISO === hoyISO ? "today" : "";
+
+        html += `
+          <div class="cal-cell ${claseHoy}" onclick="abrirDetalleDiaCalendario('${fechaISO}')">
+            <div class="cal-num">
+              <span>${dia}</span>
+              ${reservasDia.length > 0 ? `<span style="font-size:10px; background:#e2e8f0; color:var(--navy); padding:1px 5px; border-radius:8px;">${reservasDia.length}</span>` : ''}
+            </div>
+            ${badgesHtml}
+            ${masHtml}
+          </div>
+        `;
+      }
+      grid.innerHTML = html;
+    }
+
+    function abrirDetalleDiaCalendario(fechaISO) {
+      if (!verificarSesionAdminActiva()) return;
+      document.getElementById("tituloDiaCalendario").innerText = "Programación del Día: " + fechaISO;
+      const lista = (DATOS_ADMIN_CACHE.reservas || []).filter(r => r.fechaUso === fechaISO)
+        .sort((a, b) => a.horaInicio.localeCompare(b.horaInicio));
+
+      const cont = document.getElementById("cuerpoDiaCalendario");
+      if (lista.length === 0) {
+        cont.innerHTML = `<p style="text-align:center; color:#64748b;">No existen sesiones registradas para esta fecha.</p>`;
+      } else {
+        cont.innerHTML = lista.map(r => {
+          const col = r.estado === "APROBADA" ? "#059669" : (r.estado === "PENDIENTE" ? "#d97706" : "#dc2626");
+          const logEntregada = String(r.logistica || "").toUpperCase().indexOf("ENTREGADO") !== -1;
+          return `
+            <div style="border:1px solid #cbd5e1; border-left:4px solid ${col}; border-radius:6px; padding:12px; margin-bottom:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong>${r.salon} | ${r.horaInicio} a ${r.horaFin}</strong>
+                <span style="color:${col}; font-weight:700; font-size:12px;">${r.estado} (${r.id})</span>
+              </div>
+              <div style="margin-top:6px; font-size:13px; color:#334155;">
+                <b>Unidad:</b> ${r.departamento} — <b>Solicitante:</b> ${r.solicitante} (${r.personas} pers.)<br>
+                <b>Actividad:</b> ${r.motivo}<br>
+                <b>Mobiliario:</b> ${r.mobiliario} | <b>Equipo:</b> ${r.equipo}<br>
+                <b>Estado Montaje:</b> <span style="color:${logEntregada ? '#059669' : '#d97706'}; font-weight:700;">${r.logistica}</span>
+              </div>
+              <div style="margin-top:8px; display:flex; gap:6px; flex-wrap:wrap;">
+                ${r.estado === 'PENDIENTE' ? `
+                  <button class="btn btn-success btn-sm" onclick="procesarReservaAdmin('${r.id}', 'APROBADA'); cerrarModalDiaCalendario();">Aprobar</button>
+                  <button class="btn btn-danger btn-sm" onclick="procesarReservaAdmin('${r.id}', 'RECHAZADA'); cerrarModalDiaCalendario();">Rechazar</button>
+                ` : ''}
+                ${r.estado === 'APROBADA' && !logEntregada ? `
+                  <button class="btn btn-outline btn-sm" onclick="confirmarLogisticaDesdePanel('${r.id}'); cerrarModalDiaCalendario();">Confirmar Montaje</button>
+                ` : ''}
+                <button class="btn btn-outline btn-sm" onclick="cerrarModalDiaCalendario(); abrirModalReprogramar('${r.id}', '${r.salon.replace(/'/g, "\\'")}', '${r.fechaUso}', '${r.horaInicio}', '${r.horaFin}')">Reprogramar</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+      document.getElementById("modalDiaCalendario").style.display = "flex";
+    }
+    function cerrarModalDiaCalendario() { document.getElementById("modalDiaCalendario").style.display = "none"; }
+
+    function confirmarLogisticaDesdePanel(idReserva) {
+      if (!verificarSesionAdminActiva()) return;
+      const item = DATOS_ADMIN_CACHE.reservas.find(x => x.id === idReserva);
+      if (item && String(item.logistica || "").toUpperCase().indexOf("ENTREGADO") !== -1) {
+        return alert("Este montaje ya fue confirmado previamente: " + item.logistica);
+      }
+      if (item) item.logistica = "ENTREGADO (" + ADMIN_LOGUEADO.nombre + ")";
+      renderizarTablaReservasAdmin();
+      renderizarTablaHistorialAdmin();
+      callServer("confirmarEntregaLogistica", [idReserva], function(r) {
+        if (r && r.yaAtendido) alert(r.mensaje);
+        sincronizarSoloSolicitudesAdmin();
+      });
+    }
+
+    function probarAlertaPreviaManual() {
+      if (!verificarSesionAdminActiva()) return;
+      callServer("verificarAlertasPreviasMobiliario", [true], r => alert(r.mensaje));
+    }
+    function dispararRecordatoriosHoyManual() {
+      if (!verificarSesionAdminActiva()) return;
+      callServer("enviarRecordatoriosLogisticaHoy", [], r => alert(r.mensaje));
+    }
+
+    function procesarReservaAdmin(id, nuevoEstado) {
+      if (!verificarSesionAdminActiva()) return;
+      const item = DATOS_ADMIN_CACHE.reservas.find(x => x.id === id);
+      if (item && (item.estado === "APROBADA" || item.estado === "RECHAZADA") && item.atendidoPor) {
+        return alert("Aviso: Esta solicitud ya fue procesada en estado " + item.estado + " por " + item.atendidoPor + ".");
+      }
+
+      let motivo = "";
+      if (nuevoEstado === "RECHAZADA") {
+        motivo = prompt("Indique el motivo del rechazo:");
+        if (motivo === null) return;
+      }
+      if (item) { item.estado = nuevoEstado; item.atendidoPor = ADMIN_LOGUEADO.nombre; }
+      renderizarTablaReservasAdmin();
+      renderizarTablaHistorialAdmin();
+      renderizarCalendarioMensual();
+
+      callServer("cambiarEstadoReserva", [id, nuevoEstado, ADMIN_LOGUEADO.nombre, motivo], function(r) {
+        if (r && r.yaAtendido) alert(r.mensaje);
+        sincronizarSoloSolicitudesAdmin();
+        consultarHorariosFecha();
+      });
+    }
+
+    function abrirModalReprogramar(id, salon, fecha, hIni, hFin) {
+      if (!verificarSesionAdminActiva()) return;
+      document.getElementById("repIdReserva").value = id;
+      document.getElementById("tituloModalReprog").innerText = "Reprogramar Solicitud " + id;
+      document.getElementById("repSalon").value = salon;
+      document.getElementById("repFecha").value = fecha;
+      document.getElementById("repHoraIni").value = hIni;
+      document.getElementById("repHoraFin").value = hFin;
+      document.getElementById("repMotivo").value = "Programación institucional prioritaria";
+      document.getElementById("modalReprogramar").style.display = "flex";
+    }
+    function cerrarModalReprogramar() { document.getElementById("modalReprogramar").style.display = "none"; }
+
+    function ejecutarReprogramacionAdmin(modo) {
+      if (!verificarSesionAdminActiva()) return;
+      const payload = {
+        idReserva: document.getElementById("repIdReserva").value,
+        modo: modo,
+        motivo: document.getElementById("repMotivo").value.trim() || "Prioridad institucional",
+        nuevoSalon: document.getElementById("repSalon").value,
+        nuevaFecha: document.getElementById("repFecha").value,
+        nuevaHoraIni: document.getElementById("repHoraIni").value,
+        nuevaHoraFin: document.getElementById("repHoraFin").value
+      };
+      callServer("gestionarReprogramacionAdmin", [payload], function(r) {
+        alert(r.mensaje);
+        if (r.exito) {
+          cerrarModalReprogramar();
+          sincronizarSoloSolicitudesAdmin();
+          consultarHorariosFecha();
+        }
+      });
+    }
+
+    function abrirModalEmergencia() {
+      if (!verificarSesionAdminActiva()) return;
+      document.getElementById("modalEmergencia").style.display = "flex";
+    }
+    function cerrarModalEmergencia() { document.getElementById("modalEmergencia").style.display = "none"; }
+
+    function confirmarReservaEmergencia() {
+      if (!verificarSesionAdminActiva()) return;
+      const salon = document.getElementById("emgSalon").value;
+      const depto = document.getElementById("emgDepto").value.trim();
+      const fecha = document.getElementById("emgFecha").value;
+      const hIni = document.getElementById("emgIni").value;
+      const hFin = document.getElementById("emgFin").value;
+      const motivo = document.getElementById("emgMotivo").value.trim();
+      if (!salon || !fecha || !hIni || !hFin || !motivo) return alert("Complete los datos de la sesión prioritaria.");
+
+      cerrarModalEmergencia();
+      callServer("crearReservaEmergenciaAdmin", [{
+        salon: salon, departamento: depto, fechaUso: fecha,
+        horaInicio: hIni, horaFin: hFin, motivo: motivo
+      }], function(r) {
+        alert(r.mensaje);
+        sincronizarSoloSolicitudesAdmin();
+        consultarHorariosFecha();
+      });
+    }
+
+    // CRUD DE PROGRAMAS
+    function renderizarTablaDeptosAdmin() {
+      if (!DATOS_ADMIN_CACHE) return;
+      const q = (document.getElementById("buscarEnTablaDeptos").value || "").toLowerCase();
+      const lista = (DATOS_ADMIN_CACHE.departamentos || []).filter(d => d.nombre.toLowerCase().includes(q) || d.categoria.toLowerCase().includes(q));
+      document.getElementById("tbodyDeptosAdmin").innerHTML = lista.map(d => `
+        <tr>
+          <td><b>${d.id}</b></td>
+          <td>${d.nombre}</td>
+          <td>${d.categoria}</td>
+          <td><span class="badge ${d.activo === 'SI' ? 'badge-success' : 'badge-danger'}">${d.activo}</span></td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="cargarEdicionDepto('${d.id}', '${d.nombre.replace(/'/g, "\\'")}', '${d.categoria}', '${d.activo}')">Editar</button>
+            <button class="btn btn-danger btn-sm" onclick="borrarDeptoAdmin('${d.id}')">Eliminar</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+    function cargarEdicionDepto(id, nombre, cat, activo) {
+      document.getElementById("editDeptoId").value = id;
+      document.getElementById("deptoNombreInput").value = nombre;
+      document.getElementById("deptoCatInput").value = cat;
+      document.getElementById("deptoActivoInput").value = activo;
+      document.getElementById("btnGuardarDepto").innerText = "Actualizar Registro";
+      document.getElementById("btnCancelarDepto").classList.remove("hidden");
+    }
+    function limpiarFormDepto() {
+      document.getElementById("editDeptoId").value = "";
+      document.getElementById("deptoNombreInput").value = "";
+      document.getElementById("btnGuardarDepto").innerText = "Guardar Registro";
+      document.getElementById("btnCancelarDepto").classList.add("hidden");
+    }
+    function guardarDeptoDesdeAdmin() {
+      if (!verificarSesionAdminActiva()) return;
+      const id = document.getElementById("editDeptoId").value;
+      const nom = document.getElementById("deptoNombreInput").value.trim();
+      const cat = document.getElementById("deptoCatInput").value;
+      const act = document.getElementById("deptoActivoInput").value;
+      if (!nom) return alert("Ingrese el nombre del Programa o Unidad.");
+
+      if (id) {
+        const d = DATOS_ADMIN_CACHE.departamentos.find(x => x.id === id);
+        if (d) { d.nombre = nom; d.categoria = cat; d.activo = act; }
+      } else {
+        DATOS_ADMIN_CACHE.departamentos.push({ id: "NUEVO", nombre: nom, categoria: cat, activo: act });
+      }
+      renderizarTablaDeptosAdmin();
+      limpiarFormDepto();
+      callServer("guardarDepartamentoAdmin", [{ id: id, nombre: nom, categoria: cat, activo: act }], function() {
+        recargarDatosAdminSilencioso(false);
+        cargarCatalogosPublicos();
+      });
+    }
+    function borrarDeptoAdmin(id) {
+      if (!verificarSesionAdminActiva()) return;
+      if (!confirm("¿Confirma eliminar este registro del catálogo?")) return;
+      DATOS_ADMIN_CACHE.departamentos = DATOS_ADMIN_CACHE.departamentos.filter(x => x.id !== id);
+      renderizarTablaDeptosAdmin();
+      callServer("eliminarDepartamentoAdmin", [id], function() {
+        recargarDatosAdminSilencioso(false);
+        cargarCatalogosPublicos();
+      });
+    }
+
+    // CRUD DE SALONES
+    function renderizarTablaSalonesAdmin() {
+      if (!DATOS_ADMIN_CACHE) return;
+      document.getElementById("tbodySalonesAdmin").innerHTML = (DATOS_ADMIN_CACHE.salones || []).map(s => `
+        <tr>
+          <td><b>${s.id}</b></td>
+          <td><b>${s.nombre}</b></td>
+          <td>${s.capacidad} pers.</td>
+          <td>${s.ubicacion}<br><small style="color:#64748b;">${s.equipamiento}</small></td>
+          <td><span class="badge ${s.activo === 'SI' ? 'badge-success' : 'badge-warning'}">${s.activo === 'SI' ? 'HABILITADO' : 'MANTENIMIENTO'}</span></td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="cargarEdicionSalon('${s.id}', '${s.nombre.replace(/'/g, "\\'")}', '${s.capacidad}', '${s.ubicacion.replace(/'/g, "\\'")}', '${s.equipamiento.replace(/'/g, "\\'")}', '${s.activo}')">Editar</button>
+            <button class="btn btn-warning btn-sm" onclick="cambiarMantenimientoRapidoSalon('${s.id}')">${s.activo === 'SI' ? 'Mantenimiento' : 'Habilitar'}</button>
+            <button class="btn btn-danger btn-sm" onclick="borrarSalonAdmin('${s.id}')">Eliminar</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+    function cargarEdicionSalon(id, nom, cap, ubi, eq, act) {
+      document.getElementById("editSalonId").value = id;
+      document.getElementById("salNombreInput").value = nom;
+      document.getElementById("salCapInput").value = cap;
+      document.getElementById("salUbiInput").value = ubi;
+      document.getElementById("salEqInput").value = eq;
+      document.getElementById("salActivoInput").value = act;
+      document.getElementById("btnGuardarSalon").innerText = "Actualizar Salón";
+      document.getElementById("btnCancelarSalon").classList.remove("hidden");
+    }
+    function limpiarFormSalon() {
+      document.getElementById("editSalonId").value = "";
+      document.getElementById("salNombreInput").value = "";
+      document.getElementById("salCapInput").value = "";
+      document.getElementById("salUbiInput").value = "";
+      document.getElementById("salEqInput").value = "";
+      document.getElementById("salActivoInput").value = "SI";
+      document.getElementById("btnGuardarSalon").innerText = "Guardar Salón";
+      document.getElementById("btnCancelarSalon").classList.add("hidden");
+    }
+    function guardarSalonDesdeAdmin() {
+      if (!verificarSesionAdminActiva()) return;
+      const id = document.getElementById("editSalonId").value;
+      const nom = document.getElementById("salNombreInput").value.trim();
+      const cap = document.getElementById("salCapInput").value || 20;
+      const ubi = document.getElementById("salUbiInput").value.trim();
+      const eq = document.getElementById("salEqInput").value.trim();
+      const act = document.getElementById("salActivoInput").value;
+      if (!nom) return alert("Ingrese el nombre del salón.");
+
+      if (id) {
+        const s = DATOS_ADMIN_CACHE.salones.find(x => x.id === id);
+        if (s) { s.nombre = nom; s.capacidad = cap; s.ubicacion = ubi; s.equipamiento = eq; s.activo = act; }
+      } else {
+        DATOS_ADMIN_CACHE.salones.push({ id: "NUEVO", nombre: nom, capacidad: cap, ubicacion: ubi, equipamiento: eq, activo: act });
+      }
+      renderizarTablaSalonesAdmin();
+      renderizarBotonesDescargaDinamicos();
+      limpiarFormSalon();
+      callServer("guardarSalonAdmin", [{ id: id, nombre: nom, capacidad: cap, ubicacion: ubi, equipamiento: eq, activo: act }], function() {
+        recargarDatosAdminSilencioso(false);
+        cargarCatalogosPublicos();
+      });
+    }
+    function cambiarMantenimientoRapidoSalon(id) {
+      if (!verificarSesionAdminActiva()) return;
+      const s = DATOS_ADMIN_CACHE.salones.find(x => x.id === id);
+      if (!s) return;
+      s.activo = (s.activo === "SI" ? "NO" : "SI");
+      renderizarTablaSalonesAdmin();
+      callServer("guardarSalonAdmin", [s], function() {
+        recargarDatosAdminSilencioso(false);
+        cargarCatalogosPublicos();
+      });
+    }
+    function borrarSalonAdmin(id) {
+      if (!verificarSesionAdminActiva()) return;
+      if (!confirm("¿Confirma eliminar este salón del catálogo?")) return;
+      DATOS_ADMIN_CACHE.salones = DATOS_ADMIN_CACHE.salones.filter(x => x.id !== id);
+      renderizarTablaSalonesAdmin();
+      renderizarBotonesDescargaDinamicos();
+      callServer("eliminarSalonAdmin", [id], function() {
+        recargarDatosAdminSilencioso(false);
+        cargarCatalogosPublicos();
+      });
+    }
+
+    // CRUD DE PERSONAL DE MOBILIARIO (CON PIN ENMASCARADO)
+    function renderizarTablaPersonalLogisticaAdmin() {
+      if (!DATOS_ADMIN_CACHE) return;
+      document.getElementById("tbodyLogisticaAdmin").innerHTML = (DATOS_ADMIN_CACHE.personalLogistica || []).map(p => {
+        const numWa = String(p.telefono || "").replace(/[^0-9]/g, "");
+        return `
+          <tr>
+            <td><b>${p.id}</b></td>
+            <td><b>${p.nombre}</b></td>
+            <td>
+              <div>${p.correo || "Sin correo"}</div>
+              <small style="color:#64748b;">${p.telefono || ""}</small>
+              ${numWa ? `<a href="https://wa.me/${numWa}" target="_blank" class="btn btn-success btn-sm" style="padding:2px 6px; font-size:11px; margin-left:4px;">WhatsApp</a>` : ''}
+            </td>
+            <td><span class="badge badge-neutral">••••</span></td>
+            <td>
+              <button class="btn btn-outline btn-sm" onclick="alternarSwitchLogistica('${p.id}', 'alertas')">
+                ${p.alertas === 'SI' ? 'SI (Activo)' : 'NO'}
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-outline btn-sm" onclick="alternarSwitchLogistica('${p.id}', 'avisoCompanero')">
+                ${(p.avisoCompanero || 'SI') === 'SI' ? 'SI (Recibe aviso)' : 'NO'}
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-outline btn-sm" onclick="cargarEdicionPersonalLogistica('${p.id}', '${p.nombre.replace(/'/g, "\\'")}', '${p.telefono}', '${p.correo}', '${p.alertas}', '${p.avisoCompanero || 'SI'}')">Editar</button>
+              <button class="btn btn-danger btn-sm" onclick="borrarPersonalLogistica('${p.id}')">Eliminar</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+    function cargarEdicionPersonalLogistica(id, nom, tel, cor, aler, avisoComp) {
+      document.getElementById("editLogId").value = id;
+      document.getElementById("logNombre").value = nom;
+      document.getElementById("logTelefono").value = tel;
+      document.getElementById("logCorreo").value = cor;
+      document.getElementById("logPin").value = "";
+      document.getElementById("logAlertas").value = aler || "SI";
+      document.getElementById("logAvisoComp").value = avisoComp || "SI";
+      document.getElementById("btnGuardarLog").innerText = "Actualizar Personal";
+      document.getElementById("btnCancelarLog").classList.remove("hidden");
+    }
+    function limpiarFormLogistica() {
+      document.getElementById("editLogId").value = "";
+      document.getElementById("logNombre").value = "";
+      document.getElementById("logTelefono").value = "";
+      document.getElementById("logCorreo").value = "";
+      document.getElementById("logPin").value = "";
+      document.getElementById("logAlertas").value = "SI";
+      document.getElementById("logAvisoComp").value = "SI";
+      document.getElementById("btnGuardarLog").innerText = "Guardar Personal de Logística";
+      document.getElementById("btnCancelarLog").classList.add("hidden");
+    }
+    function guardarPersonalLogisticaForm() {
+      if (!verificarSesionAdminActiva()) return;
+      const id = document.getElementById("editLogId").value;
+      const nom = document.getElementById("logNombre").value.trim();
+      const tel = document.getElementById("logTelefono").value.trim();
+      const cor = document.getElementById("logCorreo").value.trim();
+      const pin = document.getElementById("logPin").value.trim();
+      const aler = document.getElementById("logAlertas").value;
+      const avisoComp = document.getElementById("logAvisoComp").value;
+      if (!nom) return alert("Ingrese el nombre del encargado.");
+      if (!id && !pin) return alert("Asigne un código PIN para el nuevo encargado de logística.");
+
+      if (id) {
+        const p = DATOS_ADMIN_CACHE.personalLogistica.find(x => x.id === id);
+        if (p) { p.nombre = nom; p.telefono = tel; p.correo = cor; p.alertas = aler; p.avisoCompanero = avisoComp; }
+      } else {
+        DATOS_ADMIN_CACHE.personalLogistica.push({ id: "NUEVO", nombre: nom, telefono: tel, correo: cor, alertas: aler, avisoCompanero: avisoComp, activo: "SI" });
+      }
+      renderizarTablaPersonalLogisticaAdmin();
+      limpiarFormLogistica();
+      callServer("guardarPersonalLogistica", [{ id: id, nombre: nom, telefono: tel, correo: cor, pin: pin, alertas: aler, avisoCompanero: avisoComp, activo: "SI" }], function() {
+        recargarDatosAdminSilencioso(false);
+      });
+    }
+    function alternarSwitchLogistica(id, campo) {
+      if (!verificarSesionAdminActiva()) return;
+      const p = DATOS_ADMIN_CACHE.personalLogistica.find(x => x.id === id);
+      if (!p) return;
+      p[campo] = ((p[campo] || "SI") === "SI" ? "NO" : "SI");
+      renderizarTablaPersonalLogisticaAdmin();
+      callServer("guardarPersonalLogistica", [p], function() { recargarDatosAdminSilencioso(false); });
+    }
+    function borrarPersonalLogistica(id) {
+      if (!verificarSesionAdminActiva()) return;
+      if (!confirm("¿Eliminar este registro de logística?")) return;
+      DATOS_ADMIN_CACHE.personalLogistica = DATOS_ADMIN_CACHE.personalLogistica.filter(x => x.id !== id);
+      renderizarTablaPersonalLogisticaAdmin();
+      callServer("eliminarPersonalLogistica", [id], function() { recargarDatosAdminSilencioso(false); });
+    }
+
+    // CRUD DE ADMINISTRADORES (CON PIN ENMASCARADO)
+    function renderizarTablaAdmins() {
+      if (!DATOS_ADMIN_CACHE) return;
+      document.getElementById("tbodyAdmins").innerHTML = (DATOS_ADMIN_CACHE.admins || []).map(a => `
+        <tr>
+          <td><b>${a.nombre}</b><br><small style="color:#64748b;">${a.rol}</small></td>
+          <td>${a.correo}</td>
+          <td><span class="badge badge-neutral">••••</span></td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="alternarSwitchAdmin('${a.id}', 'notificaciones')">
+              ${a.notificaciones === 'SI' ? 'SI' : 'NO'}
+            </button>
+          </td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="alternarSwitchAdmin('${a.id}', 'logistica')">
+              ${(a.logistica || 'SI') === 'SI' ? 'SI' : 'NO'}
+            </button>
+          </td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="alternarSwitchAdmin('${a.id}', 'avisoCompanero')">
+              ${(a.avisoCompanero || 'SI') === 'SI' ? 'SI' : 'NO'}
+            </button>
+          </td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="cargarEdicionAdmin('${a.id}', '${a.nombre.replace(/'/g, "\\'")}', '${a.correo}', '${a.rol}', '${a.notificaciones}', '${a.logistica || 'SI'}', '${a.avisoCompanero || 'SI'}')">Editar</button>
+            <button class="btn btn-danger btn-sm" onclick="borrarAdmin('${a.id}')">Eliminar</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+    function cargarEdicionAdmin(id, nom, cor, rol, notif, logis, avisoComp) {
+      document.getElementById("editAdmId").value = id;
+      document.getElementById("admNombre").value = nom;
+      document.getElementById("admCorreo").value = cor;
+      document.getElementById("admPin").value = "";
+      document.getElementById("admRol").value = rol || "Admin";
+      document.getElementById("admNotif").value = notif || "SI";
+      document.getElementById("admLogistica").value = logis || "SI";
+      document.getElementById("admAvisoComp").value = avisoComp || "SI";
+      document.getElementById("btnGuardarAdmin").innerText = "Actualizar Administrador";
+      document.getElementById("btnCancelarAdmin").classList.remove("hidden");
+    }
+    function limpiarFormAdmin() {
+      document.getElementById("editAdmId").value = "";
+      document.getElementById("admNombre").value = "";
+      document.getElementById("admCorreo").value = "";
+      document.getElementById("admPin").value = "";
+      document.getElementById("admRol").value = "Admin";
+      document.getElementById("admNotif").value = "SI";
+      document.getElementById("admLogistica").value = "SI";
+      document.getElementById("admAvisoComp").value = "SI";
+      document.getElementById("btnGuardarAdmin").innerText = "Guardar Administrador";
+      document.getElementById("btnCancelarAdmin").classList.add("hidden");
+    }
+    function guardarAdminDesdeForm() {
+      if (!verificarSesionAdminActiva()) return;
+      const id = document.getElementById("editAdmId").value;
+      const nom = document.getElementById("admNombre").value.trim();
+      const cor = document.getElementById("admCorreo").value.trim();
+      const pin = document.getElementById("admPin").value.trim();
+      const rol = document.getElementById("admRol").value;
+      const notif = document.getElementById("admNotif").value;
+      const logis = document.getElementById("admLogistica").value;
+      const avisoComp = document.getElementById("admAvisoComp").value;
+      if (!nom || !cor) return alert("Complete Nombre y Correo.");
+      if (!id && !pin) return alert("Debe asignar un PIN para el nuevo administrador.");
+
+      if (id) {
+        const a = DATOS_ADMIN_CACHE.admins.find(x => x.id === id);
+        if (a) { a.nombre = nom; a.correo = cor; a.rol = rol; a.notificaciones = notif; a.logistica = logis; a.avisoCompanero = avisoComp; }
+      } else {
+        DATOS_ADMIN_CACHE.admins.push({ id: "NUEVO", nombre: nom, correo: cor, rol: rol, notificaciones: notif, logistica: logis, avisoCompanero: avisoComp, activo: "SI" });
+      }
+      renderizarTablaAdmins();
+      limpiarFormAdmin();
+      callServer("guardarAdminCatalogo", [{ id: id, nombre: nom, correo: cor, pin: pin, rol: rol, notificaciones: notif, logistica: logis, avisoCompanero: avisoComp, activo: "SI" }], function() {
+        recargarDatosAdminSilencioso(false);
+      });
+    }
+    function alternarSwitchAdmin(id, campo) {
+      if (!verificarSesionAdminActiva()) return;
+      const a = DATOS_ADMIN_CACHE.admins.find(x => x.id === id);
+      if (!a) return;
+      a[campo] = ((a[campo] || "SI") === "SI" ? "NO" : "SI");
+      renderizarTablaAdmins();
+      callServer("guardarAdminCatalogo", [a], function() { recargarDatosAdminSilencioso(false); });
+    }
+    function borrarAdmin(id) {
+      if (!verificarSesionAdminActiva()) return;
+      if (!confirm("¿Eliminar este administrador?")) return;
+      callServer("eliminarAdminCatalogo", [id], function(r) {
+        if (!r.exito) return alert(r.mensaje);
+        recargarDatosAdminSilencioso(false);
+      });
+    }
+
+    // SOPORTE TÉCNICO ADMIN
+    function renderizarTablaSoporteAdmin() {
+      if (!DATOS_ADMIN_CACHE) return;
+      document.getElementById("tbodySoporte").innerHTML = (DATOS_ADMIN_CACHE.soporte || []).map(s => `
+        <tr>
+          <td><b>${s.nombre}</b></td><td>${s.telefono}</td><td>${s.correo}</td><td><b>${s.notificaciones}</b></td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="alternarNotifSoporte('${s.id}')">
+              Correos: ${s.notificaciones === 'SI' ? 'Desactivar' : 'Activar'}
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="borrarSoporteAdmin('${s.id}')">Eliminar</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+    function crearNuevoSoporte() {
+      if (!verificarSesionAdminActiva()) return;
+      const nom = document.getElementById("sopNombre").value.trim();
+      const tel = document.getElementById("sopTelefono").value.trim();
+      const cor = document.getElementById("sopCorreo").value.trim();
+      if (!nom) return alert("Ingrese el nombre del contacto de soporte.");
+      DATOS_ADMIN_CACHE.soporte.push({ id: "NUEVO", nombre: nom, telefono: tel, correo: cor, notificaciones: "SI", activo: "SI" });
+      renderizarTablaSoporteAdmin();
+      document.getElementById("sopNombre").value = ""; document.getElementById("sopTelefono").value = ""; document.getElementById("sopCorreo").value = "";
+      callServer("guardarSoporteCatalogo", [{ nombre: nom, telefono: tel, correo: cor, notificaciones: "SI", activo: "SI" }], function() {
+        recargarDatosAdminSilencioso(false);
+        cargarCatalogosPublicos();
+      });
+    }
+    function alternarNotifSoporte(id) {
+      if (!verificarSesionAdminActiva()) return;
+      const s = DATOS_ADMIN_CACHE.soporte.find(x => x.id === id);
+      if (!s) return;
+      s.notificaciones = (s.notificaciones === "SI" ? "NO" : "SI");
+      renderizarTablaSoporteAdmin();
+      callServer("guardarSoporteCatalogo", [s], function() { recargarDatosAdminSilencioso(false); });
+    }
+    function borrarSoporteAdmin(id) {
+      if (!verificarSesionAdminActiva()) return;
+      if (!confirm("¿Eliminar este contacto de soporte?")) return;
+      DATOS_ADMIN_CACHE.soporte = DATOS_ADMIN_CACHE.soporte.filter(x => x.id !== id);
+      renderizarTablaSoporteAdmin();
+      callServer("eliminarSoporteAdmin", [id], function() {
+        recargarDatosAdminSilencioso(false);
+        cargarCatalogosPublicos();
+      });
+    }
+
+    function guardarConfiguracionGeneral() {
+      if (!verificarSesionAdminActiva()) return;
+      const cfg = {
+        "ID_Carpeta_Drive": document.getElementById("cfgCarpetaDrive").value.trim(),
+        "URL_Puente_Web": document.getElementById("cfgUrlPuente").value.trim(),
+        "Hora_Recordatorio_Diario": document.getElementById("cfgHoraRecordatorio").value || "07:00",
+        "Minutos_Alerta_Previa_Mobiliario": document.getElementById("cfgMinutosAlertaPrevia").value,
+        "Mensaje_Personalizado_Mobiliario": document.getElementById("cfgMensajeMobiliario").value.trim(),
+        "Modo_Aprobacion": document.getElementById("cfgModo").value,
+        "Tiempo_Colchon_Minutos": document.getElementById("cfgColchon").value,
+        "Notificaciones_Activas": document.getElementById("cfgCorreos").value,
+        "Notificar_Companeros_Logistica": document.getElementById("cfgNotificarCompaneros").value,
+        "Footer_Derechos": document.getElementById("cfgFooterDerechos").value.trim(),
+        "Footer_Creador": document.getElementById("cfgFooterCreador").value.trim()
+      };
+      callServer("actualizarConfiguracionAdmin", [cfg], function(r) {
+        if (r.idCarpetaExtraido) document.getElementById("cfgCarpetaDrive").value = r.idCarpetaExtraido;
+        actualizarTextosFooter(cfg["Footer_Derechos"], cfg["Footer_Creador"]);
+        alert(r.mensaje);
+        recargarDatosAdminSilencioso(true);
+      });
+    }
+
+    function descargarAppAutonomaLimpiaServidor(vistaFija, salonFijo, nombreArchivo) {
+      if (!verificarSesionAdminActiva()) return;
+      callServer("generarHtmlAutonomoLimpio", [vistaFija, salonFijo], function(res) {
+        if (!res || !res.exito) {
+          alert("No fue posible generar el archivo desde el servidor.");
+          return;
+        }
+        const blob = new Blob([res.contenidoHtml], { type: "text/html;charset=utf-8" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = nombreArchivo;
+        a.click();
+      });
+    }
+  </script>
+</body>
+</html>
